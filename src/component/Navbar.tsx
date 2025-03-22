@@ -21,7 +21,7 @@ function Navbar() {
                   ((e.target as HTMLAnchorElement).style.color = "#D2691E")
                 }
                 onMouseOut={(e) =>
-                  ((e.target as HTMLAnchorElement).style.color = "#8B4513")
+                  ((e.target as HTMLAnchorElement).style.color = "#000000")
                 }
               >
                 {item.name}
