@@ -51,7 +51,8 @@ const styles = {
   },
   nameApp: {
     fontFamily: `"Playfair Display", serif`,
-    fontWeight: "bold",
+    fontWeight: 900,
+    fontStyle: "normal",
     color: "#B56100",
     fontSize: "50px",
   },
