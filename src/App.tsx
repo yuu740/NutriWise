@@ -27,8 +27,8 @@ const AppContent: React.FC = () => {
         <NutriWiseBanner
           username="Hutao"
           foodItems={[
-          { name: "Eggs", expiryDate: new Date("2023-08-20") },
-          // { name: "Milk", expiryDate: new Date("2025-03-23") },
+            { name: "Eggs", expiryDate: new Date("2023-08-20") },
+            // { name: "Milk", expiryDate: new Date("2025-03-23") },
           ]}
           onAddFood={() => console.log("Add food")}
           onExpiryPress={() => console.log("View details")}
