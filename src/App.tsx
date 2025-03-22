@@ -12,20 +12,25 @@ import { FoodList } from "./component/FoodList";
 import { Recipe } from "./component/Recipe";
 import { Login } from "./component/Login";
 import { Register } from "./component/Register";
+import NutriWiseBanner from "./component/FoodListNotif";
 
 const AppContent: React.FC = () => {
-  const location = useLocation();
-  const hideNavbarPaths = ["/login", "/register"];
-
   return (
     <>
-      {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
+      <Navbar />
+      <NutriWiseBanner
+        username="Hutao"
+        foodItems={[
+          // { name: "Milk", expiryDate: new Date("2025-03-23") },
+          { name: "Eggs", expiryDate: new Date("2023-08-20") }
+        ]}
+        onAddFood={() => console.log("Add food")}
+        onExpiryPress={() => console.log("View details")}
+      />
       <Routes>
         <Route path="/calculator" element={<Calculator />} />
         <Route path="/food-list" element={<FoodList />} />
         <Route path="/recipe" element={<Recipe />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
       </Routes>
     </>
   );
@@ -34,7 +39,14 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Router>
-      <AppContent />
+      <div className="App">
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+
+          <Route path="/" element={<AppContent />} />
+        </Routes>
+      </div>
     </Router>
   );
 };
