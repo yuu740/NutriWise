@@ -37,7 +37,7 @@ function Navbar() {
 const styles = {
   nav: {
     background:
-      "linear-gradient(180deg, rgba(247, 226, 85, 1) 0%, rgba(247, 226, 85, 0.5) 100%)",
+      "linear-gradient(180deg, rgb(247, 226, 85) 0%, rgb(145, 133, 50, 0) 100%)",
     padding: "10px 0",
     backdropFilter: "blur(5px)",
   },
