@@ -13,6 +13,7 @@ import { Recipe } from "./component/Recipe";
 import { Login } from "./component/Login";
 import { Register } from "./component/Register";
 import NutriWiseBanner from "./component/FoodListNotif";
+import GoToCalculator from "./component/GoToCalculator";
 
 const AppContent: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const AppContent: React.FC = () => {
         onAddFood={() => console.log("Add food")}
         onExpiryPress={() => console.log("View details")}
       />
+      <GoToCalculator />
       <Routes>
         <Route path="/calculator" element={<Calculator />} />
         <Route path="/food-list" element={<FoodList />} />
