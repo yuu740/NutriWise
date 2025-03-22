@@ -12,28 +12,11 @@ import { FoodList } from "./component/FoodList";
 import { Recipe } from "./component/Recipe";
 import { Login } from "./component/Login";
 import { Register } from "./component/Register";
+import NutriWiseBanner from "./component/FoodListNotif";
 
 const AppContent: React.FC = () => {
-  const location = useLocation();
-  const hideNavbarPaths = ["/login", "/register"];
-
   return (
     <>
-      {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
-      <Routes>
-        <Route path="/calculator" element={<Calculator />} />
-        <Route path="/food-list" element={<FoodList />} />
-        <Route path="/recipe" element={<Recipe />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    </>
-  );
-};
-
-const App: React.FC = () => {
-  return (
-    <div className="App">
       <Navbar />
       <NutriWiseBanner
         username="Hutao"
@@ -44,7 +27,27 @@ const App: React.FC = () => {
         onAddFood={() => console.log("Add food")}
         onExpiryPress={() => console.log("View details")}
       />
-    </div>
+      <Routes>
+        <Route path="/calculator" element={<Calculator />} />
+        <Route path="/food-list" element={<FoodList />} />
+        <Route path="/recipe" element={<Recipe />} />
+      </Routes>
+    </>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+
+          <Route path="/" element={<AppContent />} />
+        </Routes>
+      </div>
+    </Router>
   );
 };
 
