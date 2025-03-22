@@ -6,6 +6,7 @@ import {
   Routes,
   Route,
   useLocation,
+  Outlet,
 } from "react-router-dom";
 import { Calculator } from "./component/Calculator";
 import { FoodList } from "./component/FoodList";
@@ -16,19 +17,26 @@ import NutriWiseBanner from "./component/FoodListNotif";
 import GoToCalculator from "./component/GoToCalculator";
 
 const AppContent: React.FC = () => {
+  const location = useLocation();
+  const showBanner = !['/calculator', '/food-list', '/recipe'].includes(location.pathname);
+
   return (
     <>
       <Navbar />
-      <NutriWiseBanner
-        username="Hutao"
-        foodItems={[
-          // { name: "Milk", expiryDate: new Date("2025-03-23") },
-          { name: "Eggs", expiryDate: new Date("2023-08-20") }
-        ]}
-        onAddFood={() => console.log("Add food")}
-        onExpiryPress={() => console.log("View details")}
-      />
-      <GoToCalculator />
+      {showBanner && (
+        <NutriWiseBanner
+          username="Hutao"
+          foodItems={[
+            { name: "Eggs", expiryDate: new Date("2023-08-20") },
+            // { name: "Milk", expiryDate: new Date("2025-03-23") },
+          ]}
+          onAddFood={() => console.log("Add food")}
+          onExpiryPress={() => console.log("View details")}
+        />
+      )}
+      {showBanner && (
+        <GoToCalculator />
+      )}
       <Routes>
         <Route path="/calculator" element={<Calculator />} />
         <Route path="/food-list" element={<FoodList />} />
@@ -43,10 +51,9 @@ const App: React.FC = () => {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-
-          <Route path="/" element={<AppContent />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/*" element={<AppContent />} />
         </Routes>
       </div>
     </Router>
