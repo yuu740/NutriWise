@@ -1,7 +1,7 @@
 import React from "react";
 
 export const Login = () => {
-  return <div>Loginoeproeporpaawokawokawokawo</div>;
+  return <div>Awokawoawo</div>;
   //1. rajin-rajin git pull
   //2. kalo udah commit + sync change, git pull dulu baru pull request
   //3. kalo ada error jangan pull request dulu
