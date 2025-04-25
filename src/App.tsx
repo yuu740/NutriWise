@@ -19,7 +19,6 @@ import GoToCalculator from "./component/GoToCalculator";
 const AppContent: React.FC = () => {
   const location = useLocation();
   const showBanner = !['/calculator', '/food-list', '/recipe'].includes(location.pathname);
-
   return (
     <>
       <Navbar />
@@ -52,7 +51,7 @@ const App: React.FC = () => {
       <div className="App">
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/register" element={<Register  />} />
           <Route path="/*" element={<AppContent />} />
         </Routes>
       </div>
