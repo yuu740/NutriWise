@@ -7,7 +7,6 @@ fa.initialize_app(cred)
 
 db = firestore.client()
 
-api_key = "AIzaSyBlbtJ1h4Hr8b1Z1vzJm5E2FPItoL9NUHU"
 
 def register_user(name, email, password):
     try:
