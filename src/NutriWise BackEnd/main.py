@@ -1,12 +1,17 @@
 import firebase_admin as fa
 from firebase_admin import credentials, firestore, auth
 import requests
+from dotenv import load_dotenv
+import os
 
 cred = credentials.Certificate("ServiceAccountKey.json")
 fa.initialize_app(cred)
 
 db = firestore.client()
 
+load_dotenv(dotenv_path=".idea/.env")
+
+api_key = os.getenv('API_KEY')
 
 def register_user(name, email, password):
     try:
