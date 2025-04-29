@@ -64,10 +64,8 @@ export const Register = () => {
       fontFamily: '"Playfair Display", serif',
       position: 'relative',
       fontSize: '20px',
-      bottom: '10px',
       textAlign: 'left',
       left: '5px',
-      marginBottom: '-10px',
     },
 
     password: {
