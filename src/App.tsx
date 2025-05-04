@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import Navbar from "./component/Navbar";
+import Navbar from "./components/Navbar";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,13 +8,13 @@ import {
   useLocation,
   Outlet,
 } from "react-router-dom";
-import { Calculator } from "./component/Calculator";
-import { FoodList } from "./component/FoodList";
-import { Recipe } from "./component/Recipe";
-import { Login } from "./component/Login";
-import { Register } from "./component/Register";
-import NutriWiseBanner from "./component/FoodListNotif";
-import GoToCalculator from "./component/GoToCalculator";
+import { Calculator } from "./components/Calculator";
+import { FoodList } from "./components/FoodList";
+import { Recipe } from "./components/Recipe";
+import { Login } from "./components/Login";
+import { Register } from "./components/Register";
+import NutriWiseBanner from "./components/FoodListNotif";
+import GoToCalculator from "./components/GoToCalculator";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
