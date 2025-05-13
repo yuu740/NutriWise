@@ -15,16 +15,27 @@ import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import NutriWiseBanner from "./components/FoodListNotif";
 import GoToCalculator from "./components/GoToCalculator";
+import getUserData from "./utils/getUserData";
 
 const AppContent: React.FC = () => {
   const location = useLocation();
   const showBanner = !['/calculator', '/food-list', '/recipe'].includes(location.pathname);
+
+  let userData;
+  try {
+    userData = getUserData();
+    console.log ("this is user data : ",userData);
+  } catch (error) {
+    console.error("User not logged in or token invalid", error);
+  }
+
   return (
     <>
       <Navbar />
       {showBanner && (
         <NutriWiseBanner
-          username="Hutao"
+          // username="Hutao"
+          username = {userData?.username || "Guest"}
           foodItems={[
             { name: "Eggs", expiryDate: new Date("2023-08-20") },
             // { name: "Milk", expiryDate: new Date("2025-03-23") },
