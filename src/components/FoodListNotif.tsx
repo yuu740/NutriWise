@@ -46,7 +46,7 @@ const NutriWiseBanner: FC<NutriWiseBannerProps> = ({
         return (
             <div className="banner" style={getStyles(styles.banner)}>
                 <div style={styles.heading}>
-                    <h2 style={styles.welcome}>Welcome to the NutriWise, {username}!</h2>
+                    <h2 style={styles.welcome}>Welcome to the NutriWise, {username}!!</h2>
                 </div>
                 <div style={styles.content}>
                     <p>You haven't added your food list. Do you want to add it?</p>
