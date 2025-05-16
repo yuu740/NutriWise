@@ -13,7 +13,7 @@ import { FoodList } from "./components/FoodList";
 import { Recipe } from "./components/Recipe";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
-import NutriWiseBanner from "./components/FoodListNotif";
+import NutriWiseBanner from "./components/NutriWiseBanner";
 import GoToCalculator from "./components/GoToCalculator";
 import getUserData from "./utils/getUserData";
 
