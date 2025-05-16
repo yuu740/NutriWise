@@ -1,0 +1,64 @@
+/* navbar.css */
+.navbar {
+  background: linear-gradient(180deg, rgb(247, 226, 85) 0%, rgba(145, 133, 50, 0) 100%);
+  padding: 10px 0;
+  backdrop-filter: blur(5px);
+}
+
+.navbar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.navbar-title {
+  font-family: "Playfair Display", serif;
+  font-weight: 900;
+  font-size: 50px;
+  color: #B56100;
+}
+
+.navbar-menu {
+  list-style: none;
+  display: flex;
+  gap: 40px;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: #000;
+  font-size: 32px;
+  transition: color 0.3s ease;
+}
+
+.navbar-link:hover {
+  color: #D2691E;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .navbar-menu {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .navbar-title {
+    font-size: 36px;
+  }
+
+  .navbar-link {
+    font-size: 24px;
+  }
+}

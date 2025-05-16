@@ -1,0 +1,75 @@
+.register-page {
+  height: 100vh;
+  background-color: #fdf0b7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.register-title {
+  color: #cc6600;
+  font-family: "Playfair Display SC", serif;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.register-form {
+  background-color: #FFB35C;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 300px;
+  height: 350px; /* naik dikit supaya muat 3 input */
+  border-radius: 15px;
+  position: relative;
+}
+
+.register-label {
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+  text-align: left;
+  position: relative;
+  left: 5px;
+}
+
+.register-label.name {
+  bottom: 10px;
+  margin-bottom: -10px;
+}
+
+.register-label.email {
+  margin-bottom: -10px;
+}
+
+.register-label.password {
+  margin-bottom: -5px;
+}
+
+.register-input {
+  padding: 10px;
+  border-radius: 15px;
+  border: none;
+  background-color: #FFB1B1;
+  font-size: 16px;
+  height: 27px;
+}
+
+.register-button {
+  margin-top: 78px;
+  padding: 10px;
+  background-color: #F7E255;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  width: 64px;
+  font-family: "Playfair Display", serif;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 14px;
+  right: 24px;
+}

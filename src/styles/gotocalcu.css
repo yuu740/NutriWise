@@ -1,0 +1,26 @@
+.content {
+  margin-top: 6px;
+  margin-left: 24px;
+  color: black;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  flex-direction: column;
+}
+
+.cta {
+  background: rgba(255, 231, 75, 1);
+  color: black;
+  border-radius: 12px;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  width: 50rem;
+  font-size: 2rem;
+  border: none;
+  padding: 0.5rem 1rem;
+}

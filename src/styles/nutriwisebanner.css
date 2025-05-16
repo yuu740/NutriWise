@@ -1,0 +1,71 @@
+.banner {
+  padding: 1.5rem;
+  /* Kamu bisa uncomment kalau mau styling tambahan */
+  /* border-radius: 12px; */
+  /* background: #f8f9fa; */
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+  /* margin: 1rem 0; */
+  /* cursor: pointer; */
+  /* transition: all 0.2s ease-in-out; */
+  /* border-left: 6px solid #4a90e2; */
+}
+
+.heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.welcome {
+  margin: 0;
+  color: #2d3436;
+  font-size: 3.5em;
+  text-align: left;
+}
+
+.content {
+  margin-top: 6px;
+  margin-left: 24px;
+  color: black;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  flex-direction: column;
+}
+
+.cta {
+  background: rgba(255, 231, 75, 1);
+  color: black;
+  border-radius: 12px;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  width: 50rem;
+  font-size: 2rem;
+  border: none;
+  padding: 0.5rem 1rem;
+}
+
+.statuses-urgent {
+  font-weight: 500;
+  background: rgba(255, 231, 75, 1);
+  border-radius: 12px;
+  color: #e74c3c;
+}
+
+.statuses-neutral {
+  color: rgba(0, 153, 81, 1);
+  font-weight: 500;
+  background: rgba(255, 231, 75, 1);
+  border-radius: 12px;
+}
+
+.timeRemaining {
+  font-weight: 700;
+}
