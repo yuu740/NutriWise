@@ -25,6 +25,7 @@ const AppContent: React.FC = () => {
   try {
     userData = getUserData();
     console.log ("this is user data : ",userData);
+    console.log ("this is user data name : ",userData?.name);
   } catch (error) {
     console.error("User not logged in or token invalid", error);
   }
@@ -35,7 +36,7 @@ const AppContent: React.FC = () => {
       {showBanner && (
         <NutriWiseBanner
           // username="Hutao"
-          username = {userData?.username || "Guest"}
+          username = {userData?.name || "Guest"}
           foodItems={[
             { name: "Eggs", expiryDate: new Date("2023-08-20") },
             // { name: "Milk", expiryDate: new Date("2025-03-23") },
