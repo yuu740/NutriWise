@@ -4,6 +4,7 @@ import { ApiService } from "../constant/ApiService";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/register.css";
+import validateCredentials from "../utils/validCredentials";
 
 export const Register = () => {
   const [name, setName] = useState("");
@@ -12,6 +13,15 @@ export const Register = () => {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+    const validationError = validateCredentials(email, password);
+    if (!name.trim()) {
+      toast.error("Name is required");
+      return;
+    }
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
     try {
       const result = await ApiService.register(name, email, password);
       if (result.message === "User registered successfully") {
@@ -78,5 +88,3 @@ export const Register = () => {
     </>
   );
 };
-
-
