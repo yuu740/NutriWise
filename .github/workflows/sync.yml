@@ -27,7 +27,7 @@ jobs:
         run: git fetch upstream
 
       - name: Merge upstream into main
-        run: git merge upstream/main --strategy-option theirs -m "Auto-sync from upstream"
+        run: git merge upstream/main --allow-unrelated-histories -s recursive -X theirs -m "Auto-sync from upstream"
 
       - name: Push changes to fork
         uses: ad-m/github-push-action@v0.6.0
