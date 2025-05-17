@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { ApiService } from "../constant/ApiService";
 import { toast, ToastContainer } from "react-toastify";
 import "../styles/login.css";
+import validateCredentials from "../utils/validCredentials";
+import Cookies from "js-cookie";
 
 //1. rajin-rajin git pull
 //2. kalo udah commit + sync change, git pull dulu baru pull request
@@ -16,9 +19,15 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    const validationError = validateCredentials(email, password);
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
     try {
       const result = await ApiService.login(email, password);
       if (result.message === "Login successful") {
+        Cookies.set("token", result.token);
         toast.success(result.message);
         navigate("../App");
       } else {
@@ -68,4 +77,3 @@ export const Login = () => {
     </>
   );
 };
-

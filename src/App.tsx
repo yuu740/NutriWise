@@ -24,7 +24,6 @@ const AppContent: React.FC = () => {
   let userData;
   try {
     userData = getUserData();
-    console.log ("this is user data : ",userData);
     console.log ("this is user data name : ",userData?.name);
   } catch (error) {
     console.error("User not logged in or token invalid", error);
