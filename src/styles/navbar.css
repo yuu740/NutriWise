@@ -62,3 +62,40 @@
     font-size: 24px;
   }
 }
+
+
+@media (max-width: 480px) {
+  .navbar-container {
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 15px;
+    max-width: 100%;
+  }
+
+  .navbar-menu {
+    flex-direction: column;
+    gap: 18px;
+    width: 100%; /* full width for easier tapping */
+  }
+
+  .navbar-title {
+    font-size: 28px; /* smaller but still readable */
+    text-align: center;
+  }
+
+  .navbar-link {
+    font-size: 20px;
+    padding: 10px 0; /* bigger clickable area */
+    width: 100%;    /* full width links */
+    text-align: center;
+  }
+}
+
+/*comment buat check changes*/
+
+@media (max-width:1080px) {
+  .navbar-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
