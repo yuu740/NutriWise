@@ -41,16 +41,20 @@ export const ApiService = {
         credentials: 'include',
       });
     },
-  
-    whoami: async () => {
-      const response = await fetch(`${API_BASE_URL}/whoami`, {
+    getFoodlistBasedUser: async(username: string | undefined) => {
+      const response = await fetch (`${API_BASE_URL}/getFoodlistBasedUser`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
+        body: JSON.stringify({username}),
       });
-  
+
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || 'Session check failed');
+      if(!response.ok) {
+        throw new Error(data.message);
       }
       return data;
-    },
+    }
   };
