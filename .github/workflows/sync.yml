@@ -2,7 +2,7 @@ name: Sync Fork with Upstream
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # setiap 5 menit
+    - cron: '0 */5 * * *'  # setiap 5 menit
   workflow_dispatch:       # bisa manual lewat GitHub UI
 
 jobs:
