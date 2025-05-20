@@ -1,3 +1,5 @@
+import { Moment } from "moment";
+
 export interface FoodlistResDTO {
     food_name: string;
     quantity: number;
@@ -15,13 +17,13 @@ export interface FoodListTable {
 export interface AddFood {
     food_name?: string;
     quantity?: number;
-    expiry_date?: Date;
+    expiry_date?: Moment;
 }
 
 export interface AddFoodReqDTO {
     username: string;
     food_name: string;
     quantity: number;
-    expiry_date: Date;
+    expiry_date: string;
 
 }
