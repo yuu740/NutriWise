@@ -58,9 +58,18 @@ export const Login = () => {
             className="login-input"
           />
 
-          <button onClick={handleLogin} className="login-button">
-            Join
-          </button>
+          <div
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleLogin();
+              }
+            }}
+          >
+            <button onClick={handleLogin} className="register-button">
+              Join
+            </button>
+          </div>
         </div>
       </div>
       <ToastContainer
