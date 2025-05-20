@@ -1,11 +1,10 @@
 import { FC } from "react";
 import "../styles/nutriwisebanner.css";
-import { Foodlist } from "../interface/Foodlist";
-
+import { FoodlistResDTO } from "../interface/Foodlist";
 
 interface NutriWiseBannerProps {
   username: string;
-  foodItems: Foodlist[] | undefined;
+  foodItems: FoodlistResDTO[] | undefined;
   onAddFood?: () => void;
   onExpiryPress?: () => void;
 }
@@ -31,9 +30,7 @@ const NutriWiseBanner: FC<NutriWiseBannerProps> = ({
     if (diff <= 0) return "expired";
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor(
-      (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 
     if (days > 0) return `${days} day${days !== 1 ? "s" : ""} left`;
     if (hours > 0) return `${hours} hour${hours !== 1 ? "s" : ""} left`;
@@ -42,38 +39,52 @@ const NutriWiseBanner: FC<NutriWiseBannerProps> = ({
 
   const validFoodItems = foodItems ?? [];
 
-  const expiringItems = validFoodItems.filter((item) => isWithinThreeDays(item.expiryDate));
-
+  const expiringItems = validFoodItems.filter((item) =>
+    isWithinThreeDays(item.expiry_date)
+  );
 
   const renderContent = () => {
-    return (
-      !foodItems || foodItems.length === 0 ? (
-        <div className="content">
-          <p>You haven't added your food list. Do you want to add it?</p>
-          <p onClick={onAddFood} className="cta">
-            Click Here to the Food List
-          </p>
-        </div>
-      ) : expiringItems.length > 0 ? (
-        <div className="content statuses-urgent">
-          <p>
-            Your <strong>{expiringItems.reduce((a, b) => new Date(a.expiryDate) < new Date(b.expiryDate) ? a : b).foodName}</strong> will expire in{" "}
-            <span className="timeRemaining">{getTimeLeft(expiringItems.reduce((a, b) => new Date(a.expiryDate) < new Date(b.expiryDate) ? a : b).expiryDate)}</span>.
-          </p>
-          <p onClick={onExpiryPress} className="cta">
-            Tap for more info
-          </p>
-        </div>
-      ) : (
-        <div className="content statuses-neutral">
-          <p>You don't have any food expiring in the next 3 days</p>
-          <p onClick={onExpiryPress} className="cta">
-            Tap for more info
-          </p>
-        </div>
-      )
+    return !foodItems || foodItems.length === 0 ? (
+      <div className="content">
+        <p>You haven't added your food list. Do you want to add it?</p>
+        <p onClick={onAddFood} className="cta">
+          Click Here to the Food List
+        </p>
+      </div>
+    ) : expiringItems.length > 0 ? (
+      <div className="content statuses-urgent">
+        <p>
+          Your{" "}
+          <strong>
+            {
+              expiringItems.reduce((a, b) =>
+                new Date(a.expiry_date) < new Date(b.expiry_date) ? a : b
+              ).food_name
+            }
+          </strong>{" "}
+          will expire in{" "}
+          <span className="timeRemaining">
+            {getTimeLeft(
+              expiringItems.reduce((a, b) =>
+                new Date(a.expiry_date) < new Date(b.expiry_date) ? a : b
+              ).expiry_date
+            )}
+          </span>
+          .
+        </p>
+        <p onClick={onExpiryPress} className="cta">
+          Tap for more info
+        </p>
+      </div>
+    ) : (
+      <div className="content statuses-neutral">
+        <p>You don't have any food expiring in the next 3 days</p>
+        <p onClick={onExpiryPress} className="cta">
+          Tap for more info
+        </p>
+      </div>
     );
-  }
+  };
   return (
     <div className="banner">
       <div className="heading">

@@ -1,6 +1,29 @@
-export interface Foodlist {
-    foodName: string;
+import { Moment } from "moment";
+
+export interface FoodlistResDTO {
+    food_name: string;
     quantity: number;
-    expiryDate: Date;
-    isDeleted: boolean;
+    expiry_date: Date;
+    is_deleted: boolean;
+}
+
+export interface FoodListTable {
+    food_name: string;
+    quantity: number;
+    expiry_date: Date;
+    status: string;
+}
+
+export interface AddFood {
+    food_name?: string;
+    quantity?: number;
+    expiry_date?: Moment;
+}
+
+export interface AddFoodReqDTO {
+    username: string;
+    food_name: string;
+    quantity: number;
+    expiry_date: string;
+
 }

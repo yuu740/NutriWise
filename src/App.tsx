@@ -18,14 +18,14 @@ import { Register } from "./components/Register";
 import NutriWiseBanner from "./components/NutriWiseBanner";
 import GoToCalculator from "./components/GoToCalculator";
 import getUserData from "./utils/getUserData";
-import { Foodlist } from "./interface/Foodlist";
+import { FoodlistResDTO } from "./interface/Foodlist";
 import { ApiService } from "./constant/ApiService";
 import { UserData } from "./interface/User";
 import { toast } from "react-toastify";
 
 const AppContent = () => {
   const [userData, setUserData] = useState<UserData>({});
-  const [dataFoodList, setDataFoodList] = useState<Foodlist[]>();
+  const [dataFoodList, setDataFoodList] = useState<FoodlistResDTO[]>();
   const navigate = useNavigate();
 
   const location = useLocation();
