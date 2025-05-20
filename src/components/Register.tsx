@@ -69,9 +69,18 @@ export const Register = () => {
             className="register-input"
           />
 
-          <button onClick={handleRegister} className="register-button">
-            Join
-          </button>
+          <div
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleRegister();
+              }
+            }}
+          >
+            <button onClick={handleRegister} className="register-button">
+              Join
+            </button>
+          </div>
         </div>
       </div>
       <ToastContainer
