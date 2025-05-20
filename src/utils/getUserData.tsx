@@ -6,7 +6,8 @@ const getUserData = () => {
   const token = Cookies.get("token");
 
   if (!token) {
-    throw new Error("Token is not available");
+    console.warn("Token is not available");
+    return;
   }
   try {
     const data = decodeJwt(token);
