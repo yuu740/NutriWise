@@ -55,12 +55,22 @@ export const Register = () => {
 
   return (
     <>
-      <ToastContainer />
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-50 to-amber-100 p-4">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <div className="min-vh-100 d-flex align-items-center justify-content-center bg-gradient bg-amber-50-to-amber-100 p-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-amber-700">
-              <Link className="text-decoration-none orange-color" to="/">
+              <Link className="text-decoration-none orange-color-dark" to="/">
                 NutriWise
               </Link>
             </h1>
@@ -146,14 +156,14 @@ export const Register = () => {
                   I agree to the{" "}
                   <Link
                     to="/terms"
-                    className="text-decoration-none orange-color text-amber-600 hover:text-amber-800"
+                    className="text-decoration-none orange-color-light text-amber-600 hover:text-amber-800"
                   >
                     Terms of Service
                   </Link>{" "}
                   and{" "}
                   <Link
                     to="/privacy"
-                    className="text-decoration-none orange-color text-amber-600 hover:text-amber-800"
+                    className="text-decoration-none orange-color-light text-amber-600 hover:text-amber-800"
                   >
                     Privacy Policy
                   </Link>
@@ -183,7 +193,7 @@ export const Register = () => {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-decoration-none orange-color  text-amber-600 hover:text-amber-800 font-semibold"
+                className="text-decoration-none orange-color-light  text-amber-600 hover:text-amber-800 font-semibold"
               >
                 Log in
               </Link>
