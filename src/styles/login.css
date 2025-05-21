@@ -1,5 +1,13 @@
 .orange-color-dark {
-  color: #b5560e;
+  color: .direct-button {
+  background-color: #f59e0b;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+};
 }
 
 .orange-color-light {

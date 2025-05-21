@@ -1,14 +1,28 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "../styles/navbar.css";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ApiService } from "../constant/ApiService";
 import getUserData from "../utils/getUserData";
 import { UserData } from "../interface/User";
+import "../styles/navbar.css";
 
-const Navbar = () => {
+const getInitials = (name: string): string => {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+};
+
+interface NavbarProps {
+  children?: React.ReactNode;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ children }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
-  // const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const user = getUserData() as UserData;
@@ -17,63 +31,92 @@ const Navbar = () => {
     }
   }, []);
 
-  const navigate = useNavigate();
-
   const handleLogout = async () => {
     await ApiService.logout();
     setUserData(null);
     navigate("/");
   };
 
+  const isActive = (path: string) => location.pathname === path;
+  const toggleDropdown = () => setDropdownOpen((prev) => !prev);
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <h1 className="navbar-title">NUTRIWISE</h1>
-        <ul className="navbar-menu">
-          <li>
-            <Link to="/calculator" className="navbar-link">
-              Calculator
-            </Link>
-          </li>
-          <li>
-            <Link to="/food-list" className="navbar-link">
-              Food List
-            </Link>
-          </li>
-          <li>
-            <Link to="/recipe" className="navbar-link">
-              Recipe
-            </Link>
-          </li>
+    <>
+      <div className="min-vh-100 bg-gradient bg-amber-50-to-amber-100">
+        <header className="border-bottom bg-white shadow-sm">
+          <div className="container d-flex h-16 align-items-center justify-content-between px-4">
+            <h1 className="h4 font-weight-bold text-amber-600">
+              <Link className="text-decoration-none orange-color-light" to="/">
+                NutriWise
+              </Link>
+            </h1>
 
-          {userData ? (
-            <>
-              <li>
-                <span className="navbar-link">Hi, {userData?.name}</span>
-              </li>
-              <li>
-                <Link to="#" onClick={handleLogout} className="navbar-link">
-                  Logout
+            <nav className="d-none d-md-flex gap-4">
+              {[
+                { path: "/calculator", label: "Calculator" },
+                { path: "/food-list", label: "Food List" },
+                { path: "/recipes", label: "Recipes" },
+              ].map(({ path, label }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  className={`nav-link-custom ${
+                    isActive(path) ? "active" : ""
+                  }`}
+                >
+                  {label}
                 </Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link to="/login" className="navbar-link">
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" className="navbar-link">
-                  Register
-                </Link>
-              </li>
-            </>
-          )}
-        </ul>
+              ))}
+            </nav>
+            <div className="d-flex align-items-center">
+              {userData ? (
+                <div className="position-relative">
+                  <div className="user-initial" onClick={toggleDropdown}>
+                    {getInitials(userData?.name ?? "")}
+                  </div>
+                  <div
+                    className={`dropdown-menu-custom ${
+                      dropdownOpen ? "show" : ""
+                    }`}
+                  >
+                    <div className="px-3 py-2">
+                      <p className="mb-1 fw-medium">
+                        Welcome, {userData?.name}
+                      </p>
+                    </div>
+                    <hr className="my-1" />
+                    <Link to="/profile" className="dropdown-item-custom">
+                      Profile
+                    </Link>
+                    <Link to="/settings" className="dropdown-item-custom">
+                      Settings
+                    </Link>
+                    <hr className="my-1" />
+                    <div
+                      onClick={handleLogout}
+                      className="dropdown-item-custom"
+                      style={{ cursor: "pointer" }}
+                    >
+                      Log out
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <Link to="/login" className="nav-login">
+                    Login
+                  </Link>
+                  <Link to="/register" className="nav-register">
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </header>
+
+        <main className="container px-4 py-5">{children}</main>
       </div>
-    </nav>
+    </>
   );
 };
 
