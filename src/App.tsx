@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+
 import Navbar from "./components/Navbar";
 import {
   BrowserRouter as Router,
@@ -29,34 +29,31 @@ const AppContent = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const showBanner = !['/calculator', '/food-list', '/recipe'].includes(location.pathname);
+  const showBanner = !["/calculator", "/food-list", "/recipe"].includes(
+    location.pathname
+  );
 
-
-  
-  useEffect(() =>{
+  useEffect(() => {
     const user = getUserData() as UserData;
     if (user) {
       setUserData(user);
     }
   }, []);
-useEffect(() => {
-  if (userData?.name) {
-    getFoodListData();
-  }
-}, [userData]);
+  useEffect(() => {
+    if (userData?.name) {
+      getFoodListData();
+    }
+  }, [userData]);
 
-  const getFoodListData = async  () => {
+  const getFoodListData = async () => {
     if (!userData?.name) return;
     try {
-          const res = await ApiService.getFoodlistBasedUser(userData?.name);
-          setDataFoodList(res);
-
-
-    }catch (error:any){
+      const res = await ApiService.getFoodlistBasedUser(userData?.name);
+      setDataFoodList(res);
+    } catch (error: any) {
       toast.error(error.message);
     }
-
-  }
+  };
 
   return (
     <>
@@ -65,31 +62,36 @@ useEffect(() => {
         <NutriWiseBanner
           // username="Hutao"
           username={`${userData?.name ? userData?.name : "Guest"}`}
-
           foodItems={dataFoodList}
-          onAddFood={() => navigate('/food-list')}
+          onAddFood={() => navigate("/food-list")}
           onExpiryPress={() => console.log("View details")}
         />
       )}
-      {showBanner && (
-        <GoToCalculator />
-      )}
+      {showBanner && <GoToCalculator />}
       <Routes>
         <Route path="/calculator" element={<Calculator />} />
-        <Route path="/food-list" element={<FoodList username={`${userData?.name ? userData?.name : "Guest"}`} foodItems={dataFoodList}/>} />
+        <Route
+          path="/food-list"
+          element={
+            <FoodList
+              username={`${userData?.name ? userData?.name : "Guest"}`}
+              foodItems={dataFoodList}
+            />
+          }
+        />
         <Route path="/recipe" element={<Recipe />} />
       </Routes>
     </>
   );
 };
 
-const App  = () => {
+const App = () => {
   return (
     <Router>
       <div className="App">
-        <Routes>  
+        <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register  />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/*" element={<AppContent />} />
         </Routes>
       </div>
