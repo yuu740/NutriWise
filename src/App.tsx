@@ -8,7 +8,7 @@ import { Recipe } from "./components/Recipe";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import NutriWiseBanner from "./components/Home";
-import GoToCalculator from "./components/GoToCalculator";
+
 import getUserData from "./utils/getUserData";
 import { FoodlistResDTO } from "./interface/Foodlist";
 import { ApiService } from "./constant/ApiService";
