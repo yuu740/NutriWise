@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { Form } from "react-router-dom";
-import "../styles/modaladd.css";
 import { AddFood, AddFoodReqDTO } from "../interface/Foodlist";
 import moment from "moment";
 
