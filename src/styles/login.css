@@ -1,73 +1,28 @@
-
-
-.login-page {
-  height: 100vh;
-  background-color: #fdf0b7;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.orange-color-dark {
+  color: #b5560e;
 }
 
-.login-title {
-  color: #cc6600;
-  font-family: "Playfair Display SC", serif;
-  font-weight: bold;
-  margin-bottom: 20px;
+.orange-color-light {
+  color: #d97706;
 }
-
 .login-form {
-  background-color: #FFB35C;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  min-width: 300px;
-  height: 300px;
-  border-radius: 15px;
-  position: relative;
-}
-
-.login-label {
-  font-family: "Playfair Display", serif;
-  font-size: 20px;
-  text-align: left;
-  position: relative;
-  left: 5px;
-}
-
-.login-label.email {
-  bottom: 10px;
-  margin-bottom: -10px;
-}
-
-.login-label.password {
-  margin-bottom: -5px;
-}
-
-.login-input {
-  padding: 10px;
-  border-radius: 15px;
-  border: none;
-  background-color: #FFB1B1;
-  font-size: 16px;
-  height: 27px;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  max-width: 450px;
+  margin: 0 auto;
 }
 
 .login-button {
-  margin-top: 78px;
-  padding: 10px;
-  background-color: #F7E255;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #d97706;
+  color: #fff;
   border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  width: 64px;
-  font-family: "Playfair Display", serif;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  bottom: 14px;
-  right: 24px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.login-button:hover {
+  background-color: #ff8c09;
 }
