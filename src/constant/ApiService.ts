@@ -1,4 +1,4 @@
-import { AddFoodReqDTO, FoodlistResDTO } from "../interface/Foodlist";
+import {  FoodlistResDTO, FoodReqDTO } from "../interface/Foodlist";
 
 const API_BASE_URL = "https://taim.pythonanywhere.com/";
 
@@ -60,7 +60,7 @@ export const ApiService = {
     return data;
   },
 
-  addFoodList: async (addFoodDTO: AddFoodReqDTO) => {
+  addFoodList: async (addFoodDTO: FoodReqDTO) => {
     try {
       const response = await fetch(`${API_BASE_URL}addFood`, {
         method: "POST",
@@ -74,4 +74,20 @@ export const ApiService = {
       console.error("Failed to add food: ", error);
     }
   },
+  deleteFoodList: async(deleteFoodDTO: FoodReqDTO) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}DeleteFood`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(deleteFoodDTO),
+      })
+      if (response.ok) {
+        return response;
+      }
+
+    }
+    catch (error) {
+      console.error("Failed to delete food: ", error);
+    }
+  }
 };
