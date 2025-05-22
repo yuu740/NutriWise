@@ -1,98 +1,61 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+
 import Navbar from "./components/Navbar";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-  Outlet,
-  useNavigate,
-  useRoutes,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Calculator } from "./components/Calculator";
 import { FoodList } from "./components/FoodList";
 import { Recipe } from "./components/Recipe";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
-import NutriWiseBanner from "./components/NutriWiseBanner";
-import GoToCalculator from "./components/GoToCalculator";
+import NutriWiseBanner from "./components/Home";
+
 import getUserData from "./utils/getUserData";
 import { FoodlistResDTO } from "./interface/Foodlist";
 import { ApiService } from "./constant/ApiService";
 import { UserData } from "./interface/User";
 import { toast } from "react-toastify";
+import Home from "./components/Home";
+import AppLayout from "./components/AppLayout";
 
-const AppContent = () => {
+const App = () => {
   const [userData, setUserData] = useState<UserData>({});
   const [dataFoodList, setDataFoodList] = useState<FoodlistResDTO[]>();
-  const navigate = useNavigate();
 
-  const location = useLocation();
-  const showBanner = !['/calculator', '/food-list', '/recipe'].includes(location.pathname);
-
-
-  
-  useEffect(() =>{
+  useEffect(() => {
     const user = getUserData() as UserData;
     if (user) {
       setUserData(user);
     }
   }, []);
-useEffect(() => {
-  if (userData?.name) {
-    getFoodListData();
-  }
-}, [userData]);
+  useEffect(() => {
+    if (userData?.name) {
+      getFoodListData();
+    }
+  }, [userData]);
 
-  const getFoodListData = async  () => {
+  const getFoodListData = async () => {
     if (!userData?.name) return;
     try {
-          const res = await ApiService.getFoodlistBasedUser(userData?.name);
-          setDataFoodList(res);
-
-
-    }catch (error:any){
+      const res = await ApiService.getFoodlistBasedUser(userData?.name);
+      setDataFoodList(res);
+    } catch (error: any) {
       toast.error(error.message);
     }
+  };
 
-  }
-
-  return (
-    <>
-      <Navbar />
-      {showBanner && (
-        <NutriWiseBanner
-          // username="Hutao"
-          username={`${userData?.name ? userData?.name : "Guest"}`}
-
-          foodItems={dataFoodList}
-          onAddFood={() => navigate('/food-list')}
-          onExpiryPress={() => console.log("View details")}
-        />
-      )}
-      {showBanner && (
-        <GoToCalculator />
-      )}
-      <Routes>
-        <Route path="/calculator" element={<Calculator />} />
-        <Route path="/food-list" element={<FoodList username={`${userData?.name ? userData?.name : "Guest"}`} foodItems={dataFoodList}/>} />
-        <Route path="/recipe" element={<Recipe />} />
-      </Routes>
-    </>
-  );
-};
-
-const App  = () => {
   return (
     <Router>
-      <div className="App">
-        <Routes>  
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register  />} />
-          <Route path="/*" element={<AppContent />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route path="/" element={<AppLayout />}>
+          <Route index element={<Home isLoggedIn={userData != null} />} />
+          <Route path="calculator" element={<Calculator />} />
+          <Route path="food-list" element={<FoodList />} />
+          <Route path="recipes" element={<Recipe />} />
+        </Route>
+      </Routes>
     </Router>
   );
 };
