@@ -1,6 +1,6 @@
 import {  FoodlistResDTO, AddFoodReqDTO, DelFoodReqDTO } from "../interface/Foodlist";
 
-const API_BASE_URL = "https://taim.pythonanywhere.com/";
+const API_BASE_URL = "https://taim.pythonanywhere.com";
 
 export const ApiService = {
   register: async (name: string, email: string, password: string) => {
@@ -56,7 +56,7 @@ export const ApiService = {
 
   addFoodList: async (addFoodDTO: AddFoodReqDTO) => {
     try {
-      const response = await fetch(`${API_BASE_URL}addFood`, {
+      const response = await fetch(`${API_BASE_URL}/addFood`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(addFoodDTO),
@@ -70,7 +70,7 @@ export const ApiService = {
   },
   deleteFoodList: async(deleteFoodDTO: DelFoodReqDTO) => {
     try {
-      const response = await fetch(`${API_BASE_URL}DeleteFood`, {
+      const response = await fetch(`${API_BASE_URL}/DeleteFood`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(deleteFoodDTO),
