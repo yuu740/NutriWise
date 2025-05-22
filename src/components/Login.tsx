@@ -33,7 +33,7 @@ export const Login = () => {
       if (result.message === "Login successful") {
         Cookies.set("token", result.token);
         toast.success(result.message);
-        navigate("../App");
+        navigate("/");
       } else {
         toast.error(result.message);
       }

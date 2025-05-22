@@ -5,6 +5,7 @@ import { ApiService } from "../constant/ApiService";
 import getUserData from "../utils/getUserData";
 import { UserData } from "../interface/User";
 import "../styles/navbar.css";
+import Cookies from "js-cookie";
 
 const getInitials = (name: string): string => {
   return name
@@ -24,17 +25,25 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     const user = getUserData() as UserData;
-    if (user) {
+    if (user && Cookies.get("token")) { 
       setUserData(user);
+      setIsLoggedIn(true); 
+    } else {
+      setUserData(null);
+      setIsLoggedIn(false);
     }
-  }, []);
+  }, [location.pathname]);
 
-  const handleLogout = async () => {
-    await ApiService.logout();
+  const handleLogout = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    Cookies.remove("token");
     setUserData(null);
-    navigate("/");
+    setIsLoggedIn(false); 
+    navigate("/login");
   };
 
   const isActive = (path: string) => location.pathname === path;
@@ -58,17 +67,23 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               ].map(({ path, label }) => (
                 <Link
                   key={path}
-                  to={path}
+                  to={isLoggedIn ? path : "/login"}
                   className={`nav-link-custom ${
                     isActive(path) ? "active" : ""
-                  }`}
+                  } ${!isLoggedIn ? "disabled-link" : ""}`}
+                  onClick={(e) => {
+                    if (!isLoggedIn) {
+                      e.preventDefault(); 
+                      navigate("/login");
+                    }
+                  }}
                 >
                   {label}
                 </Link>
               ))}
             </nav>
             <div className="d-flex align-items-center">
-              {userData ? (
+              {userData && isLoggedIn ? (
                 <div className="position-relative">
                   <div className="user-initial" onClick={toggleDropdown}>
                     {getInitials(userData?.name ?? "")}

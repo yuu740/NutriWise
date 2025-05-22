@@ -1,8 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/home.css";
 
 const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+  const navigate = useNavigate();
+
+   const handleCardClick = (e: React.MouseEvent, link: string) => {
+    if (!isLoggedIn) {
+      e.preventDefault(); 
+      navigate("/login");
+    } else {
+      navigate(link); 
+    }
+  };
   return (
     <div className="container py-5 text-center">
       <h1 className="display-4 mb-3">Welcome to NutriWise</h1>
@@ -72,20 +82,19 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 </div>
                 <h5 className="card-title">{card.title}</h5>
                 <p className="card-text">{card.text}</p>
-                <Link
-                  to={card.link}
-                  className={`btn direct-button text-white  ${
+                 <div
+                  onClick={(e) => handleCardClick(e, card.link)}
+                  className={`btn direct-button text-white ${
                     !isLoggedIn ? "disabled" : ""
                   }`}
-                  aria-disabled={!isLoggedIn}
-                  tabIndex={!isLoggedIn ? -1 : undefined}
+                  style={{ cursor: !isLoggedIn ? "not-allowed" : "pointer" }} // Tambahkan kursor
                 >
                   {card.title === "Track Food"
                     ? "View Food List"
                     : card.title === "Calculate Nutrients"
                     ? "Open Calculator"
                     : "Browse Recipes"}
-                </Link>
+                </div>
               </div>
             </div>
           </div>
