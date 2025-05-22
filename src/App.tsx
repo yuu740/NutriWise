@@ -4,10 +4,10 @@ import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Calculator } from "./components/Calculator";
 import { FoodList } from "./components/FoodList";
-import { Recipe } from "./components/Recipe";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import NutriWiseBanner from "./components/Home";
+import RecipesPage from "./components/Recipe";
 
 import getUserData from "./utils/getUserData";
 import { FoodlistResDTO } from "./interface/Foodlist";
@@ -53,7 +53,7 @@ const App = () => {
           <Route index element={<Home isLoggedIn={userData != null} />} />
           <Route path="calculator" element={<Calculator />} />
           <Route path="food-list" element={<FoodList />} />
-          <Route path="recipes" element={<Recipe />} />
+          <Route path="recipes" element={<RecipesPage />} />
         </Route>
       </Routes>
     </Router>
