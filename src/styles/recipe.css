@@ -2,6 +2,18 @@
   padding: 20px;
 }
 
+.nav-link {
+
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: orange;
+  color: white; 
+}
+
+
+
 .card {
   border: none;
   border-radius: 10px;
