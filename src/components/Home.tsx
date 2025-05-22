@@ -1,8 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/home.css";
 
 const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+  const navigate = useNavigate();
+
+   const handleCardClick = (e: React.MouseEvent, link: string) => {
+    if (!isLoggedIn) {
+      e.preventDefault(); 
+      navigate("/login");
+    } else {
+      navigate(link); 
+    }
+  };
   return (
     <div className="container py-5 text-center">
       <h1 className="display-4 mb-3">Welcome to NutriWise</h1>
@@ -10,7 +20,33 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         Your personal nutrition assistant to track food, calculate nutrients,
         and discover recipes based on what you have.
       </p>
-      <div className="row mb-5">
+
+      {!isLoggedIn && (
+        <div
+          className="p-4 border rounded mx-auto border-warning mb-5" 
+          style={{
+            maxWidth: "600px",
+            backgroundColor: "#fffbeb",
+          }}
+        >
+          <h4>Create an account to get started</h4>
+          <p className="text-muted">
+            Sign up to save your food inventory, track your nutritional goals, and
+            get personalized recipe recommendations.
+          </p>
+          <div className="d-flex justify-content-center gap-3">
+            <Link to="/login" className="btn bg-white text-dark border">
+              Log in
+            </Link>
+            <Link to="/register" className="btn direct-button text-white">
+              Create Account
+            </Link>
+          </div>
+        </div>
+      )}
+
+
+      <div className="row mb-5 p-5">
         {[
           {
             title: "Track Food",
@@ -72,46 +108,23 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 </div>
                 <h5 className="card-title">{card.title}</h5>
                 <p className="card-text">{card.text}</p>
-                <Link
-                  to={card.link}
-                  className={`btn direct-button text-white  ${
+                 <div
+                  onClick={(e) => handleCardClick(e, card.link)}
+                  className={`btn direct-button text-white ${
                     !isLoggedIn ? "disabled" : ""
                   }`}
-                  aria-disabled={!isLoggedIn}
-                  tabIndex={!isLoggedIn ? -1 : undefined}
+                  style={{ cursor: !isLoggedIn ? "not-allowed" : "pointer" }} // Tambahkan kursor
                 >
                   {card.title === "Track Food"
                     ? "View Food List"
                     : card.title === "Calculate Nutrients"
                     ? "Open Calculator"
                     : "Browse Recipes"}
-                </Link>
+                </div>
               </div>
             </div>
           </div>
         ))}
-      </div>
-
-      <div
-        className="p-4 border rounded mx-auto border-warning"
-        style={{
-          maxWidth: "600px",
-          backgroundColor: "#fffbeb",
-        }}
-      >
-        <h4>Create an account to get started</h4>
-        <p className="text-muted">
-          Sign up to save your food inventory, track your nutritional goals, and
-          get personalized recipe recommendations.
-        </p>
-        <div className="d-flex justify-content-center gap-3">
-          <Link to="/login" className="btn bg-white text-dark border">
-            Log in
-          </Link>
-          <Link to="/register" className="btn direct-button text-white">
-            Create Account
-          </Link>
-        </div>
       </div>
     </div>
   );

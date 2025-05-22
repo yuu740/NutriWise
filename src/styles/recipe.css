@@ -1,0 +1,26 @@
+.container {
+  padding: 20px;
+}
+
+.nav-link {
+
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: orange;
+  color: white; 
+}
+
+
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.notActive {
+  background-color: rgb(214, 214, 214);
+  color: rgb(65, 65, 65);
+}

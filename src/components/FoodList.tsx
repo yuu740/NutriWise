@@ -1,11 +1,13 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import {
   AddFood,
   AddFoodReqDTO,
+  DelFoodReqDTO,
   FoodlistResDTO,
   FoodListTable,
 } from "../interface/Foodlist";
+import { Button, Card, Form, Modal, Table, Spinner } from "react-bootstrap";
 import { ModalAdd } from "./ModalAdd";
 import { ApiService } from "../constant/ApiService";
 import { getExpiryStatus } from "../utils/getExpStatus";
@@ -18,15 +20,21 @@ interface FoodListProps {
 export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [foodListState, setFoodListState] = useState<FoodListTable[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteItem, setDeleteItem] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dateFormat = moment().format("MMMM Do YYYY");
 
   useEffect(() => {
+    setIsLoading(true);
     const converted = foodItems.map((item) => ({
+      log_id: item.log_id,
       food_name: item.food_name,
       quantity: item.quantity,
       expiry_date: new Date(item.expiry_date),
-      status: getExpiryStatus(item.expiry_date),
+      status: getExpiryStatus(item.expiry_date).status,
     }));
 
     setFoodListState((prev) => {
@@ -34,16 +42,15 @@ export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
         prev.length === converted.length &&
         prev.every(
           (item, index) =>
+            item.log_id === converted[index].log_id &&
             item.food_name === converted[index].food_name &&
             item.quantity === converted[index].quantity &&
-            item.expiry_date.getTime() ===
-              converted[index].expiry_date.getTime() &&
+            item.expiry_date.getTime() === converted[index].expiry_date.getTime() &&
             item.status === converted[index].status
         );
-
-      if (isSame) return prev;
-      return converted;
+      return isSame ? prev : converted;
     });
+    setIsLoading(false);
   }, [foodItems]);
 
   const handleModal = useCallback(() => {
@@ -64,70 +71,338 @@ export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
 
       try {
         await ApiService.addFoodList(newFoodItem);
-        const addedItem: FoodListTable = {
-          food_name: newFood.food_name,
-          quantity: newFood.quantity,
-          expiry_date:
-            newFood.expiry_date instanceof Date
-              ? newFood.expiry_date
-              : moment.isMoment(newFood.expiry_date)
-              ? newFood.expiry_date.toDate()
-              : new Date(newFood.expiry_date),
-          status: getExpiryStatus(
-            newFood.expiry_date instanceof Date
-              ? newFood.expiry_date
-              : moment.isMoment(newFood.expiry_date)
-              ? newFood.expiry_date.toDate()
-              : new Date(newFood.expiry_date)
-          ),
-        };
-        setFoodListState((prevList = []) => [...prevList, addedItem]);
       } catch (error) {
         console.error("Failed to save to backend:", error);
       }
     },
     [username]
   );
-  const renderContent = () => {
-    if (!foodListState || foodListState.length === 0) {
-      return (
-        <div className="empty-box">
-          <p className="empty-text">
-            You haven’t any food list, Please click <strong>Add</strong> button
-          </p>
-        </div>
-      );
-    } else {
-      return (
-        <div className="food-list">
-          {foodListState.map((item, index) => (
-            <div key={index} className="food-item">
-              <p>
-                <strong>{item.food_name}</strong>
-              </p>
-              <p>Quantity: {item.quantity}</p>
-              <p>Expiry: {moment(item.expiry_date).format("MMMM Do YYYY")}</p>
-            </div>
-          ))}
-        </div>
-      );
-    }
-  };
-  return (
-    <div className="food-list-container">
-      <h1 className="title">Food List</h1>
-      <p className="date">Now : {dateFormat}</p>
-      {renderContent()}
 
-      <div className="buttons">
-        <button className="btn btn-add" onClick={handleModal}>
-          Add
-        </button>
-        <button className="btn btn-delete">Delete</button>
-      </div>
-      {isOpenModal && (
-        <ModalAdd onClose={handleModal} onSubmit={addFoodHandler} />
+  const formatDate = (date: Date | Moment) => {
+    return moment(date).format("MMMM Do YYYY");
+  };
+
+  const toggleItemSelection = (id: string) => {
+    setSelectedItems((prev) => {
+      const isSelected = prev.includes(id);
+      return isSelected
+        ? prev.filter((selectedId) => selectedId !== id)
+        : [...prev, id];
+    });
+  };
+  const handleSelectAll = useCallback(() => {
+    if (
+      selectedItems.length === foodListState.length &&
+      foodListState.length > 0
+    ) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(foodListState.map((item) => item.log_id));
+    }
+  }, [selectedItems, foodListState]);
+
+  const deleteFoodItem = async (itemToDelete: FoodListTable) => {
+    try {
+      const delReq: DelFoodReqDTO = { log_id: itemToDelete.log_id };
+      await ApiService.deleteFoodList(delReq);
+      setFoodListState((prev) =>
+        prev.filter((food) => food.log_id !== itemToDelete.log_id)
+      );
+
+      setSelectedItems((prev) =>
+        prev.filter((selectedId) => selectedId !== itemToDelete.log_id)
+      );
+    } catch (error) {
+      console.error("Failed to delete item:", error);
+    }
+    setIsDeleteModalOpen(false);
+    setDeleteItem(null);
+  };
+
+  const handleDeleteSelected = async () => {
+    try {
+      for (const log_id of selectedItems) {
+        const delReq: DelFoodReqDTO = { log_id: log_id };
+        await ApiService.deleteFoodList(delReq);
+      }
+
+      setFoodListState((prev) =>
+        prev.filter((item) => !selectedItems.includes(item.log_id))
+      );
+      setSelectedItems([]);
+    } catch (error) {
+      console.error("Failed to delete selected items:", error);
+    }
+    setIsDeleteModalOpen(false);
+  };
+
+  return (
+    <div className="py-8">
+      {isLoading ? (
+        <div className="d-flex justify-content-center align-items-center py-12">
+          <Spinner animation="border" variant="warning" />
+        </div>
+      ) : foodListState.length > 0 ? (
+        <Card className="overflow-hidden">
+          <Table responsive>
+            <thead>
+              <tr className="bg-amber-100">
+                <th className="w-12 text-center">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    checked={
+                      selectedItems.length === foodItems.length &&
+                      foodItems.length > 0
+                    }
+                    onChange={handleSelectAll}
+                  />
+                </th>
+                <th>Food Type</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+                <th className="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {foodListState.map((item) => {
+                const status = getExpiryStatus(item.expiry_date);
+                return (
+                  <tr
+                    key={item.log_id}
+                    className={
+                      selectedItems.includes(item.log_id) ? "bg-amber-50" : ""
+                    }
+                  >
+                    <td className="text-center">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={selectedItems.includes(item.log_id)}
+                        onChange={() => toggleItemSelection(item.log_id)}
+                      />
+                    </td>
+                    <td className="font-medium">{item.food_name}</td>
+                    <td>{item.quantity}</td>
+                    <td>{formatDate(item.expiry_date)}</td>
+                    <td>
+                      <span
+                        className={
+                          status.status === "expired"
+                            ? "badge bg-red-100 text-red-800"
+                            : status.days <= 2
+                            ? "badge bg-red-100 text-red-800"
+                            : status.days <= 5
+                            ? "badge bg-amber-100 text-amber-800"
+                            : "badge bg-green-100 text-green-800"
+                        }
+                      >
+                        {status.status === "expired"
+                          ? `Expired ${
+                              status.days > 1
+                                ? `${status.days} days ago`
+                                : "today"
+                            }`
+                          : status.days === 0
+                          ? "Expires today"
+                          : status.days === 1
+                          ? "Expires tomorrow"
+                          : `${status.days} days left`}
+                      </span>
+                    </td>
+                    <td className="text-right">
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => {
+                          setDeleteItem(item.log_id);
+                          setIsDeleteModalOpen(true);
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                        </svg>
+                        <span className="sr-only">Delete</span>
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+
+          {selectedItems.length > 0 && (
+            <div className="p-4 bg-amber-50 border-top border-amber-200 d-flex justify-content-between align-items-center">
+              <p className="text-sm text-amber-800">
+                {selectedItems.length} item(s) selected
+              </p>
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={() => setIsDeleteModalOpen(true)}
+              >
+                Delete Selected
+              </Button>
+            </div>
+          )}
+        </Card>
+      ) : (
+        <Card className="text-center p-5 custom-card-shadow">
+          <div className="mx-auto mb-4 rounded-circle bg-amber-100 d-flex align-items-center justify-content-center icon-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-10 w-10 text-amber-600"
+            >
+              <path d="M14 22H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h8" />
+              <path d="M13.3 2H13v10h10V7.7" />
+              <path d="m13 5.5 7.5 7.5" />
+            </svg>
+          </div>
+          <h3 className="mb-3">Your food list is empty</h3>
+          <p className="text-muted mb-4 mx-auto max-w-md">
+            Start tracking your food inventory by adding items. This will help
+            you monitor expiration dates and plan your meals more effectively.
+          </p>
+          <Button
+            variant="warning"
+            size="lg"
+            className="add-item-button"
+            onClick={handleModal}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="me-2"
+            >
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+            Add Your First Food Item
+          </Button>
+        </Card>
       )}
+      <ModalAdd
+        show={isOpenModal}
+        onClose={handleModal}
+        onSubmit={addFoodHandler}
+      />
+
+      <div className="mt-5 row g-4">
+        <div className="col-md-4">
+          <Card className="p-4">
+            <div className="mb-3 rounded-circle bg-amber-100 d-flex align-items-center justify-content-center feature-icon-circle">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-6 w-6 text-amber-600"
+              >
+                <path d="M11 12H3" />
+                <path d="M16 6H3" />
+                <path d="M16 18H3" />
+                <path d="M18 9v6" />
+                <path d="M21 12h-6" />
+              </svg>
+            </div>
+            <h4 className="mb-2">Track Your Food</h4>
+            <p className="text-muted small">
+              Add food items to your inventory to keep track of what you have
+              and when it expires.
+            </p>
+          </Card>
+        </div>
+
+        <div className="col-md-4">
+          <Card className="p-4">
+            <div className="mb-3 rounded-circle bg-amber-100 d-flex align-items-center justify-content-center feature-icon-circle">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-6 w-6 text-amber-600"
+              >
+                <path d="M10 2v8L5 8" />
+                <path d="M14 10h2a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-2" />
+                <path d="M8 18v-1a2 2 0 0 1 2-2h2" />
+                <path d="M4 21a2 2 0 0 0 2-2v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2" />
+              </svg>
+            </div>
+            <h4 className="mb-2">Reduce Food Waste</h4>
+            <p className="text-muted small">
+              Get notified before your food expires so you can use it before it
+              goes bad.
+            </p>
+          </Card>
+        </div>
+
+        <div className="col-md-4">
+          <Card className="p-4">
+            <div className="mb-3 rounded-circle bg-amber-100 d-flex align-items-center justify-content-center feature-icon-circle">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-6 w-6 text-amber-600"
+              >
+                <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z" />
+                <line x1="6" x2="18" y1="17" y2="17" />
+              </svg>
+            </div>
+            <h4 className="mb-2">Discover Recipes</h4>
+            <p className="text-muted small">
+              Find recipes based on the ingredients you already have in your
+              food list.
+            </p>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
