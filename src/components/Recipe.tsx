@@ -7,37 +7,31 @@ const RecipesPage: React.FC = () => {
 
   return (
     <div className="container mt-5" style={{ backgroundColor: '#fff9e6', minHeight: '100vh' }}>
-      <h2 className="mb-3">Recipe Collection</h2>
-      <p className="mb-4">Find recipes based on ingredients you have</p>
-      <div className="input-group mb-3">
-        <input type="text" className="form-control" placeholder="Search recipes..." />
+      <div className="row input-group mb-3">
+        <h2 className="col-mb-3 align-items-start">Recipe Collection</h2>
+        <p className="col align-items-start">Find recipes based on ingredients you have</p>
+        <input type="text" className="col mb-4 align-items-end form-control" placeholder="Search recipes..." />
       </div>
-      <ul className="nav nav-tabs mb-3">
-        <li className="nav-item">
+      <div className="nav nav-tabs mb-3 row">
           <button
-            className={`nav-link ${activeTab === 'all' ? 'active' : ''}`}
+            className={`nav-link col ${activeTab === 'all' ? 'active' : ''}`}
             onClick={() => setActiveTab('all')}
           >
             All Recipes
           </button>
-        </li>
-        <li className="nav-item">
           <button
-            className={`nav-link ${activeTab === 'canMakeNow' ? 'active' : ''}`}
+            className={`nav-link col ${activeTab === 'canMakeNow' ? 'active' : ''}`}
             onClick={() => setActiveTab('canMakeNow')}
           >
             Can Make Now
           </button>
-        </li>
-        <li className="nav-item">
           <button
-            className={`nav-link ${activeTab === 'partiallyAvailable' ? 'active' : ''}`}
+            className={`nav-link col ${activeTab === 'partiallyAvailable' ? 'active' : ''}`}
             onClick={() => setActiveTab('partiallyAvailable')}
           >
             Partially Available
           </button>
-        </li>
-      </ul>
+      </div>
 
       <div className="card p-4 text-center">
         {activeTab === 'partiallyAvailable' && (
