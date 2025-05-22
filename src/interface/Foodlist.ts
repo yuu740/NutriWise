@@ -20,7 +20,7 @@ export interface AddFood {
     expiry_date?: Moment;
 }
 
-export interface AddFoodReqDTO {
+export interface FoodReqDTO {
     username: string;
     food_name: string;
     quantity: number;
