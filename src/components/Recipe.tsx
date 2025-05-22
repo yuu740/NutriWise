@@ -48,10 +48,17 @@ const RecipesPage: React.FC = () => {
           </>
         )}
         {activeTab === 'canMakeNow' && (
-          <p>Select a recipe to view details.</p>
+          <>
+            <img src="https://via.placeholder.com/50?text=🍳" alt="Chef Icon" className="mb-3" />
+            <h4>No recipes available to make</h4>
+            <p>Add more ingredients to your food list to see recipes you can make with what you have.</p>
+          </>
         )}
         {activeTab === 'all' && (
-          <p>Browse all recipes here.</p>
+          <>
+            <img src="https://via.placeholder.com/50?text=🍳" alt="Chef Icon" className="mb-3" />
+            <h4>Placeholder for getting recipe logic</h4>
+          </>
         )}
       </div>
     </div>
