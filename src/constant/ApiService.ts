@@ -1,4 +1,4 @@
-import {  FoodlistResDTO, FoodReqDTO } from "../interface/Foodlist";
+import {  FoodlistResDTO, AddFoodReqDTO, DelFoodReqDTO } from "../interface/Foodlist";
 
 const API_BASE_URL = "https://taim.pythonanywhere.com/";
 
@@ -37,12 +37,6 @@ export const ApiService = {
     return data;
   },
 
-  logout: async () => {
-    await fetch(`${API_BASE_URL}/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
-  },
   getFoodlistBasedUser: async (username: string | undefined) => {
     const response = await fetch(`${API_BASE_URL}/getFoodlistBasedUser`, {
       method: "POST",
@@ -60,7 +54,7 @@ export const ApiService = {
     return data;
   },
 
-  addFoodList: async (addFoodDTO: FoodReqDTO) => {
+  addFoodList: async (addFoodDTO: AddFoodReqDTO) => {
     try {
       const response = await fetch(`${API_BASE_URL}addFood`, {
         method: "POST",
@@ -74,7 +68,7 @@ export const ApiService = {
       console.error("Failed to add food: ", error);
     }
   },
-  deleteFoodList: async(deleteFoodDTO: FoodReqDTO) => {
+  deleteFoodList: async(deleteFoodDTO: DelFoodReqDTO) => {
     try {
       const response = await fetch(`${API_BASE_URL}DeleteFood`, {
         method: "PATCH",
