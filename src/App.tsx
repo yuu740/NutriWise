@@ -16,15 +16,22 @@ import { UserData } from "./interface/User";
 import { toast } from "react-toastify";
 import Home from "./components/Home";
 import AppLayout from "./components/AppLayout";
+import Cookies from "js-cookie";
 
 const App = () => {
-  const [userData, setUserData] = useState<UserData>({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>({});
   const [dataFoodList, setDataFoodList] = useState<FoodlistResDTO[]>();
 
   useEffect(() => {
     const user = getUserData() as UserData;
     if (user) {
       setUserData(user);
+      setIsLoggedIn(true);
+    } else {
+      Cookies.remove("token");
+      setUserData(null);
+      setIsLoggedIn(false);
     }
   }, []);
   useEffect(() => {
