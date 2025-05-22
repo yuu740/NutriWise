@@ -14,19 +14,19 @@ const RecipesPage: React.FC = () => {
       </div>
       <div className="nav nav-tabs mb-3 row">
           <button
-            className={`nav-link col ${activeTab === 'all' ? 'active' : ''}`}
+            className={`nav-link col ${activeTab === 'all' ? 'active' : 'notActive'}`}
             onClick={() => setActiveTab('all')}
           >
             All Recipes
           </button>
           <button
-            className={`nav-link col ${activeTab === 'canMakeNow' ? 'active' : ''}`}
+            className={`nav-link col ${activeTab === 'canMakeNow' ? 'active' : 'notActive'}`}
             onClick={() => setActiveTab('canMakeNow')}
           >
             Can Make Now
           </button>
           <button
-            className={`nav-link col ${activeTab === 'partiallyAvailable' ? 'active' : ''}`}
+            className={`nav-link col ${activeTab === 'partiallyAvailable' ? 'active' : 'notActive'}`}
             onClick={() => setActiveTab('partiallyAvailable')}
           >
             Partially Available
