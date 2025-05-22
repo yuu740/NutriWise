@@ -20,7 +20,30 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         Your personal nutrition assistant to track food, calculate nutrients,
         and discover recipes based on what you have.
       </p>
-      <div className="row mb-5">
+
+      <div
+        className="p-4 border rounded mx-auto border-warning"
+        style={{
+          maxWidth: "600px",
+          backgroundColor: "#fffbeb",
+        }}
+      >
+        <h4>Create an account to get started</h4>
+        <p className="text-muted">
+          Sign up to save your food inventory, track your nutritional goals, and
+          get personalized recipe recommendations.
+        </p>
+        <div className="d-flex justify-content-center gap-3">
+          <Link to="/login" className="btn bg-white text-dark border">
+            Log in
+          </Link>
+          <Link to="/register" className="btn direct-button text-white">
+            Create Account
+          </Link>
+        </div>
+      </div>
+
+      <div className="row mb-5 p-5">
         {[
           {
             title: "Track Food",
@@ -99,28 +122,6 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
             </div>
           </div>
         ))}
-      </div>
-
-      <div
-        className="p-4 border rounded mx-auto border-warning"
-        style={{
-          maxWidth: "600px",
-          backgroundColor: "#fffbeb",
-        }}
-      >
-        <h4>Create an account to get started</h4>
-        <p className="text-muted">
-          Sign up to save your food inventory, track your nutritional goals, and
-          get personalized recipe recommendations.
-        </p>
-        <div className="d-flex justify-content-center gap-3">
-          <Link to="/login" className="btn bg-white text-dark border">
-            Log in
-          </Link>
-          <Link to="/register" className="btn direct-button text-white">
-            Create Account
-          </Link>
-        </div>
       </div>
     </div>
   );
