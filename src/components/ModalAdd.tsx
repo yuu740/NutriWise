@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
-import { AddFood, FoodReqDTO } from "../interface/Foodlist";
+import { AddFood, AddFoodReqDTO } from "../interface/Foodlist";
 import moment, { Moment } from "moment";
 
 interface ModalAddProps {
