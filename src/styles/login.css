@@ -1,18 +1,14 @@
 .orange-color-dark {
-  color: .direct-button {
-  background-color: #f59e0b;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 14px;
-  text-decoration: none;
-};
+  color: #b5560e;
 }
+
 
 .orange-color-light {
   color: #d97706;
 }
+
+
+
 .login-form {
   border-radius: 8px;
   padding: 24px;
