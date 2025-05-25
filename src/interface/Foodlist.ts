@@ -4,7 +4,7 @@ export interface FoodlistResDTO {
     log_id: string;
     food_name: string;
     quantity: number;
-    expiry_date: Date;
+    exp_date: string;
     is_deleted: boolean;
 }
 
@@ -30,5 +30,6 @@ export interface AddFoodReqDTO {
 }
 
 export interface DelFoodReqDTO{
+        username: string;
     log_id: string;
 }

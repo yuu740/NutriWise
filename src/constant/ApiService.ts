@@ -83,5 +83,22 @@ export const ApiService = {
     catch (error) {
       console.error("Failed to delete food: ", error);
     }
-  }
+  },
+
+  getRecipeBasedUser: async (username: string | undefined) => {
+    const response = await fetch(`${API_BASE_URL}/getRecipesWithAvailability`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ username }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  },
 };

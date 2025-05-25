@@ -7,55 +7,63 @@ import {
   FoodlistResDTO,
   FoodListTable,
 } from "../interface/Foodlist";
-import { Button, Card, Form, Modal, Table, Spinner } from "react-bootstrap";
+import { Button, Card, Table, Spinner } from "react-bootstrap";
 import { ModalAdd } from "./ModalAdd";
+import {ModalDel} from "./ModalDel";
 import { ApiService } from "../constant/ApiService";
 import { getExpiryStatus } from "../utils/getExpStatus";
 
 interface FoodListProps {
   username?: string;
   foodItems?: FoodlistResDTO[];
+  onFoodAdded: () => void;
 }
 
-export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
+export const FoodList: FC<FoodListProps> = ({
+  username,
+  foodItems = [],
+  onFoodAdded,
+}) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [foodListState, setFoodListState] = useState<FoodListTable[]>([]);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteItem, setDeleteItem] = useState<string | null>(null);
+  const [deleteItem, setDeleteItem] = useState<FoodListTable | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const dateFormat = moment().format("MMMM Do YYYY");
 
   useEffect(() => {
     setIsLoading(true);
-    const converted = foodItems.map((item) => ({
-      log_id: item.log_id,
-      food_name: item.food_name,
-      quantity: item.quantity,
-      expiry_date: new Date(item.expiry_date),
-      status: getExpiryStatus(item.expiry_date).status,
-    }));
+    const converted = foodItems.map((item) => {
+      return {
+        log_id: item.log_id,
+        food_name: item.food_name,
+        quantity: item.quantity,
+        expiry_date: new Date(item.exp_date),
+        status: getExpiryStatus(item.exp_date).status,
+      };
+    });
 
     setFoodListState((prev) => {
-      const isSame =
+      if (
         prev.length === converted.length &&
-        prev.every(
-          (item, index) =>
-            item.log_id === converted[index].log_id &&
-            item.food_name === converted[index].food_name &&
-            item.quantity === converted[index].quantity &&
-            item.expiry_date.getTime() === converted[index].expiry_date.getTime() &&
-            item.status === converted[index].status
-        );
-      return isSame ? prev : converted;
+        prev.every((item, index) => item.log_id === converted[index].log_id)
+      ) {
+        return prev;
+      }
+      return converted;
     });
     setIsLoading(false);
   }, [foodItems]);
 
-  const handleModal = useCallback(() => {
+  const handleAddModalToggle = useCallback(() => {
     setIsOpenModal((prev) => !prev);
   }, []);
+  const handleDeleteModalToggle = useCallback(() => {
+    setIsDeleteModalOpen((prev) => !prev);
+    if (isDeleteModalOpen) {
+      setDeleteItem(null);
+    }
+  }, [isDeleteModalOpen]);
 
   const addFoodHandler = useCallback(
     async (newFood: AddFood) => {
@@ -71,15 +79,17 @@ export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
 
       try {
         await ApiService.addFoodList(newFoodItem);
+        onFoodAdded();
+        handleAddModalToggle();
       } catch (error) {
         console.error("Failed to save to backend:", error);
       }
     },
-    [username]
+    [username, onFoodAdded, handleAddModalToggle]
   );
 
   const formatDate = (date: Date | Moment) => {
-    return moment(date).format("MMMM Do YYYY");
+    return moment(date).isValid() ? moment(date).format("MMMM Do YYYY") : "Invalid Date";
   };
 
   const toggleItemSelection = (id: string) => {
@@ -101,48 +111,69 @@ export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
     }
   }, [selectedItems, foodListState]);
 
-  const deleteFoodItem = async (itemToDelete: FoodListTable) => {
-    try {
-      const delReq: DelFoodReqDTO = { log_id: itemToDelete.log_id };
-      await ApiService.deleteFoodList(delReq);
-      setFoodListState((prev) =>
-        prev.filter((food) => food.log_id !== itemToDelete.log_id)
-      );
-
-      setSelectedItems((prev) =>
-        prev.filter((selectedId) => selectedId !== itemToDelete.log_id)
-      );
-    } catch (error) {
-      console.error("Failed to delete item:", error);
+  const confirmSingleDelete = async () => {
+    if (deleteItem) {
+      try {
+        const delReq: DelFoodReqDTO = { username: username??"Guest", log_id: deleteItem.log_id };
+        await ApiService.deleteFoodList(delReq);
+        onFoodAdded(); 
+      } catch (error) {
+        console.error("Failed to delete item:", error);
+      }
+      handleDeleteModalToggle(); 
+      setDeleteItem(null); 
     }
-    setIsDeleteModalOpen(false);
-    setDeleteItem(null);
   };
 
-  const handleDeleteSelected = async () => {
+  const confirmSelectedDelete = async () => {
     try {
       for (const log_id of selectedItems) {
-        const delReq: DelFoodReqDTO = { log_id: log_id };
+        const delReq: DelFoodReqDTO = {username: username ?? "Guest", log_id: log_id};
         await ApiService.deleteFoodList(delReq);
       }
-
-      setFoodListState((prev) =>
-        prev.filter((item) => !selectedItems.includes(item.log_id))
-      );
-      setSelectedItems([]);
+      onFoodAdded(); 
+      setSelectedItems([]); 
     } catch (error) {
       console.error("Failed to delete selected items:", error);
     }
-    setIsDeleteModalOpen(false);
+    handleDeleteModalToggle();
+  };
+
+  const getDeletionHandler = () => {
+    return deleteItem ? confirmSingleDelete : confirmSelectedDelete;
   };
 
   return (
-    <div className="py-8">
+    <div className="py-8 position-relative">
       {isLoading ? (
         <div className="d-flex justify-content-center align-items-center py-12">
           <Spinner animation="border" variant="warning" />
         </div>
       ) : foodListState.length > 0 ? (
+        <>
+          <div className="d-flex justify-content-end mb-3">
+            <Button
+              variant="warning"
+              onClick={handleAddModalToggle}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="me-2"
+              >
+                <path d="M5 12h14" />
+                <path d="M12 5v14" />
+              </svg>
+              Add Food Item
+            </Button>
+          </div>
         <Card className="overflow-hidden">
           <Table responsive>
             <thead>
@@ -189,13 +220,11 @@ export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
                     <td>
                       <span
                         className={
-                          status.status === "expired"
-                            ? "badge bg-red-100 text-red-800"
-                            : status.days <= 2
-                            ? "badge bg-red-100 text-red-800"
+                          status.status === "expired" || status.days <= 2
+                            ? "badge bg-danger  text-white"
                             : status.days <= 5
-                            ? "badge bg-amber-100 text-amber-800"
-                            : "badge bg-green-100 text-green-800"
+                            ? "badge bg-warning text-dark"
+                            : "badge bg-success text-white"
                         }
                       >
                         {status.status === "expired"
@@ -217,7 +246,7 @@ export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
                         size="sm"
                         className="h-8 w-8 p-0"
                         onClick={() => {
-                          setDeleteItem(item.log_id);
+                          setDeleteItem(item);
                           setIsDeleteModalOpen(true);
                         }}
                       >
@@ -253,13 +282,17 @@ export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
               <Button
                 variant="outline-danger"
                 size="sm"
-                onClick={() => setIsDeleteModalOpen(true)}
+                 onClick={() => {
+                  setDeleteItem(null); 
+                  handleDeleteModalToggle(); 
+                }}
               >
                 Delete Selected
               </Button>
             </div>
           )}
         </Card>
+        </>
       ) : (
         <Card className="text-center p-5 custom-card-shadow">
           <div className="mx-auto mb-4 rounded-circle bg-amber-100 d-flex align-items-center justify-content-center icon-circle">
@@ -288,8 +321,8 @@ export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
           <Button
             variant="warning"
             size="lg"
-            className="add-item-button"
-            onClick={handleModal}
+            className="add-item-button floating-add-button"
+            onClick={handleAddModalToggle}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -306,14 +339,22 @@ export const FoodList: FC<FoodListProps> = ({ username, foodItems = [] }) => {
               <path d="M5 12h14" />
               <path d="M12 5v14" />
             </svg>
-            Add Your First Food Item
+            Add Food Item
           </Button>
         </Card>
       )}
       <ModalAdd
         show={isOpenModal}
-        onClose={handleModal}
+        onClose={handleAddModalToggle}
         onSubmit={addFoodHandler}
+      />
+
+       <ModalDel
+        show={isDeleteModalOpen}
+        onClose={handleDeleteModalToggle}
+        onConfirm={getDeletionHandler()}
+        itemToDeleteName={deleteItem ? deleteItem.food_name : null}
+        selectedItemsCount={selectedItems.length}
       />
 
       <div className="mt-5 row g-4">
