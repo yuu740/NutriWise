@@ -5,6 +5,7 @@ import { ApiService } from "../constant/ApiService";
 import { Recipe, RecipeResDTO } from "../interface/Recipe";
 import { Button, Card, Spinner } from "react-bootstrap";
 import getPercentageBadgeClasses from "../utils/getPercentage";
+import { ModalRecipeDetail } from "./ModalRecipeDetail";
 
 interface RecipesPageProps {
   username?: string;
@@ -16,11 +17,16 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showRecipeDetailModal, setShowRecipeDetailModal] = useState(false);
+  const [selectedRecipeDetail, setSelectedRecipeDetail] =
+    useState<Recipe | null>(null);
+  
+
 
   const processRecipes = useCallback((recipe: RecipeResDTO[]): Recipe[] => {
     return recipe.map((recipe, index) => {
       const availableCount = recipe.available_ingredients.length;
-      console.log ("This is available count : ", availableCount);
+      console.log("This is available count : ", availableCount);
       const totalCount = recipe.total_ingredients;
       const availabilityPercentage =
         totalCount > 0 ? (availableCount / totalCount) * 100 : 0;
@@ -45,6 +51,9 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
         availability_percentage: parseFloat(availabilityPercentage.toFixed(0)),
         missing_all_ingredients: missingAllIngredients,
         can_make_now: canMakeNow,
+        ingredient_details: recipe.ingredient_details,
+        recipe_steps: recipe.recipe_steps,
+
       };
     });
   }, []);
@@ -92,6 +101,16 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
     }
     return false;
   });
+
+  const handleViewRecipeClick = useCallback((recipe: Recipe) => {
+    setSelectedRecipeDetail(recipe);
+    setShowRecipeDetailModal(true);
+  }, []);
+
+ const handleCloseRecipeDetailModal = useCallback(() => {
+    setShowRecipeDetailModal(false);
+    setSelectedRecipeDetail(null);
+  }, []);
 
   return (
     <div
@@ -180,12 +199,14 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
                       </span>
                     ))}
                     {recipe.ingredients.length > 3 && (
-                      <span className="badge bg-light text-dark">
+                      <span className="badge bg-light text-dark view-more-ingredients"
+                        onClick={() => handleViewRecipeClick(recipe)} 
+                        style={{ cursor: 'pointer' }}>
                         +{recipe.ingredients.length - 3} more
                       </span>
                     )}
                   </div>
-                  <Button variant="warning" className="w-100 mt-3">
+                  <Button variant="warning" className="w-100 mt-3" onClick={() => handleViewRecipeClick(recipe)}>
                     View Recipe
                   </Button>
                 </Card.Body>
@@ -218,6 +239,16 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
             Try adjusting your ingredients or switching to a different category.
           </p>
         </Card>
+      )}
+      {selectedRecipeDetail && ( 
+        <ModalRecipeDetail
+          show={showRecipeDetailModal}
+          onClose={handleCloseRecipeDetailModal}
+          recipeTitle={selectedRecipeDetail.recipe_name}
+          ingredients={selectedRecipeDetail.ingredients}
+          ingredientDetails={selectedRecipeDetail.ingredient_details}
+          recipeSteps={selectedRecipeDetail.recipe_steps} 
+          />
       )}
     </div>
   );

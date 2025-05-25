@@ -13,4 +13,6 @@ export interface Recipe {
   availability_percentage: number;
   missing_all_ingredients: boolean;
   can_make_now: boolean;
+  ingredient_details: string[];
+  recipe_steps: string[];
 }
