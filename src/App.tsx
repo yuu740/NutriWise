@@ -59,7 +59,7 @@ const App = () => {
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home isLoggedIn={userData != null} />} />
           <Route path="calculator" element={<NutritionCalculator />} />
-          <Route path="food-list" element={<FoodList />} />
+          <Route path="food-list" element={<FoodList username = {userData?.name} foodItems={dataFoodList} onFoodAdded = {getFoodListData}/>} />
           <Route path="recipes" element={<RecipesPage />} />
         </Route>
       </Routes>

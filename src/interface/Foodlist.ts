@@ -30,5 +30,6 @@ export interface AddFoodReqDTO {
 }
 
 export interface DelFoodReqDTO{
+        username: string;
     log_id: string;
 }

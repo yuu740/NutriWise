@@ -1,22 +1,20 @@
-export const getExpiryStatus = (expiry: Date): { status: string; days: number }  => {
-  const expiryDate = new Date(expiry);
-  const now = new Date();
-  expiryDate.setHours(0, 0, 0, 0);
-  now.setHours(0, 0, 0, 0);
+import moment from "moment";
 
+export const getExpiryStatus = (expiryDate: string | Date) => {
+  const today = moment();
+  const expiration = moment(expiryDate);
 
-  const diffTime = expiryDate.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const daysDiff = expiration.diff(today, "days");
 
-   if (diffDays < 0) {
-    return { status: "expired", days: Math.abs(diffDays) };
-  } else if (diffDays === 0) {
+  if (expiration.isBefore(today, "day")) {
+    return { status: "expired", days: Math.abs(daysDiff) };
+  } else if (daysDiff === 0) {
     return { status: "expires_today", days: 0 };
-  } else if (diffDays <= 2) {
-    return { status: "soon", days: diffDays };
-  } else if (diffDays <= 5) {
-    return { status: "warning", days: diffDays };
+  } else if (daysDiff === 1) {
+    return { status: "expires_tomorrow", days: 1 };
+  } else if (daysDiff <= 5) {
+    return { status: "warning", days: daysDiff };
   } else {
-    return { status: "fresh", days: diffDays };
+    return { status: "fresh", days: daysDiff };
   }
 };
