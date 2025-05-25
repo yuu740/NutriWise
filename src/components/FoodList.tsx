@@ -37,7 +37,7 @@ export const FoodList: FC<FoodListProps> = ({
       log_id: item.log_id,
       food_name: item.food_name,
       quantity: item.quantity,
-      expiry_date: moment(item.expiry_date, "YYYY-MM-DD").toDate(),
+      expiry_date: moment(item.expiry_date).toDate(),
       status: getExpiryStatus(item.expiry_date).status,
     }));
 
@@ -87,7 +87,7 @@ export const FoodList: FC<FoodListProps> = ({
   );
 
   const formatDate = (date: Date | Moment) => {
-    return moment(date).format("MMMM Do YYYY");
+    return moment(date).isValid() ? moment(date).format("MMMM Do YYYY") : "Invalid Date";
   };
 
   const toggleItemSelection = (id: string) => {
@@ -218,13 +218,11 @@ export const FoodList: FC<FoodListProps> = ({
                     <td>
                       <span
                         className={
-                          status.status === "expired"
-                            ? "badge bg-red-100 text-red-800"
-                            : status.days <= 2
-                            ? "badge bg-red-100 text-red-800"
+                          status.status === "expired" || status.days <= 2
+                            ? "badge bg-danger  text-white"
                             : status.days <= 5
-                            ? "badge bg-amber-100 text-amber-800"
-                            : "badge bg-green-100 text-green-800"
+                            ? "badge bg-warning text-dark"
+                            : "badge bg-success text-white"
                         }
                       >
                         {status.status === "expired"
