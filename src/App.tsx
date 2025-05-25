@@ -60,7 +60,7 @@ const App = () => {
           <Route index element={<Home isLoggedIn={userData != null} />} />
           <Route path="calculator" element={<NutritionCalculator />} />
           <Route path="food-list" element={<FoodList username = {userData?.name} foodItems={dataFoodList} onFoodAdded = {getFoodListData}/>} />
-          <Route path="recipes" element={<RecipesPage />} />
+          <Route path="recipes" element={<RecipesPage username = {userData?.name}/>} />
         </Route>
       </Routes>
     </Router>
