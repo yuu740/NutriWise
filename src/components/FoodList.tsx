@@ -33,13 +33,15 @@ export const FoodList: FC<FoodListProps> = ({
 
   useEffect(() => {
     setIsLoading(true);
-    const converted = foodItems.map((item) => ({
-      log_id: item.log_id,
-      food_name: item.food_name,
-      quantity: item.quantity,
-      expiry_date: moment(item.expiry_date).toDate(),
-      status: getExpiryStatus(item.expiry_date).status,
-    }));
+    const converted = foodItems.map((item) => {
+      return {
+        log_id: item.log_id,
+        food_name: item.food_name,
+        quantity: item.quantity,
+        expiry_date: new Date(item.exp_date),
+        status: getExpiryStatus(item.exp_date).status,
+      };
+    });
 
     setFoodListState((prev) => {
       if (

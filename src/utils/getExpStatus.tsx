@@ -3,6 +3,9 @@ import moment from "moment";
 export const getExpiryStatus = (expiryDate: string | Date) => {
   const today = moment();
   const expiration = moment(expiryDate);
+  if (!expiration.isValid()) {
+    return { status: "invalid_date", days: -999 };
+  }
 
   const daysDiff = expiration.diff(today, "days");
 
