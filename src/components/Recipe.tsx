@@ -17,18 +17,19 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const processRecipes = useCallback((apiRecipes: RecipeResDTO[]): Recipe[] => {
-    return apiRecipes.map((apiRecipe, index) => {
-      const availableCount = apiRecipe.available_ingredients.length;
-      const totalCount = apiRecipe.total_ingredients;
+  const processRecipes = useCallback((recipe: RecipeResDTO[]): Recipe[] => {
+    return recipe.map((recipe, index) => {
+      const availableCount = recipe.available_ingredients.length;
+      console.log ("This is available count : ", availableCount);
+      const totalCount = recipe.total_ingredients;
       const availabilityPercentage =
         totalCount > 0 ? (availableCount / totalCount) * 100 : 0;
       const canMakeNow = availabilityPercentage === 100;
       const missingAllIngredients = availableCount === 0 && totalCount > 0;
 
       const allIngredientsForDisplay = [
-        ...apiRecipe.available_ingredients.map((name) => ({ name, has: true })),
-        ...apiRecipe.unavailable_ingredients.map((name) => ({
+        ...recipe.available_ingredients.map((name) => ({ name, has: true })),
+        ...recipe.unavailable_ingredients.map((name) => ({
           name,
           has: false,
         })),
@@ -38,8 +39,8 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
       );
 
       return {
-        recipe_id: apiRecipe.recipe_title.replace(/\s/g, "-") + "-" + index,
-        recipe_name: apiRecipe.recipe_title,
+        recipe_id: recipe.recipe_title.replace(/\s/g, "-") + "-" + index,
+        recipe_name: recipe.recipe_title,
         ingredients: allIngredientsForDisplay,
         availability_percentage: parseFloat(availabilityPercentage.toFixed(0)),
         missing_all_ingredients: missingAllIngredients,
