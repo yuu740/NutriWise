@@ -1,0 +1,40 @@
+name: Sync Fork with Upstream
+
+on:
+  schedule:
+    
+    # - cron: '*/5 * * * *' # setiap 5 menit
+    - cron: '0 */1 * * *' # setiap 1 jam
+    # - cron: '0 */5 * * *'  # setiap 5 jam
+  workflow_dispatch:       # bisa manual lewat GitHub UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          ref: main  # sync branch target
+          persist-credentials: false
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/Dexcop/NutriWise.git
+
+      - name: Fetch upstream
+        run: git fetch upstream
+
+      - name: Merge upstream into main
+        run: git merge upstream/main --allow-unrelated-histories -s recursive -X theirs -m "Auto-sync from upstream"
+
+      - name: Push changes to fork
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          branch: main
+          
