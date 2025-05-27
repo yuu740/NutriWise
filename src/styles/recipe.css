@@ -24,3 +24,31 @@
   background-color: rgb(214, 214, 214);
   color: rgb(65, 65, 65);
 }
+
+.pagination .page-item.active .page-link {
+  background-color: #d97706;
+  border-color: #d97706;
+  color: #ffffff; 
+}
+
+.pagination .page-item .page-link {
+  color: #d97706;
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: #ffe0b2; 
+  border-color: #d97706;
+  color: #d84315;
+}
+
+
+.pagination .page-item .page-link {
+  border-color: #d97706; 
+}
+
+
+.pagination .page-item.disabled .page-link {
+  color: #cccccc;
+  border-color: #e0e0e0;
+  background-color: #f8f9fa;
+}
