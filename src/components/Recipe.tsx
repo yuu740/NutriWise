@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/recipe.css";
 import { ApiService } from "../constant/ApiService";
 import { Recipe, RecipeResDTO } from "../interface/Recipe";
-import { Button, Card, Spinner } from "react-bootstrap";
+import { Button, Card, Pagination, Spinner } from "react-bootstrap";
 import getPercentageBadgeClasses from "../utils/getPercentage";
 import { ModalRecipeDetail } from "./ModalRecipeDetail";
 
@@ -20,8 +20,8 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
   const [showRecipeDetailModal, setShowRecipeDetailModal] = useState(false);
   const [selectedRecipeDetail, setSelectedRecipeDetail] =
     useState<Recipe | null>(null);
-  
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [recipesPerPage] = useState(6);
 
   const processRecipes = useCallback((recipe: RecipeResDTO[]): Recipe[] => {
     return recipe.map((recipe, index) => {
@@ -53,7 +53,6 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
         can_make_now: canMakeNow,
         ingredient_details: recipe.ingredient_details,
         recipe_steps: recipe.recipe_steps,
-
       };
     });
   }, []);
@@ -73,15 +72,14 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
       const processed = processRecipes(response.recipes);
 
       const sortedRecipes = [...processed].sort((a, b) => {
+        if (b.availability_percentage !== a.availability_percentage) {
+          return b.availability_percentage - a.availability_percentage;
+        }
 
-        if (b.availability_percentage !== a.availability_percentage) {
-          return b.availability_percentage - a.availability_percentage;
-        }
-
-        return a.recipe_name.localeCompare(b.recipe_name);
-      });
+        return a.recipe_name.localeCompare(b.recipe_name);
+      });
       console.log("This is processed:", sortedRecipes);
-      setRecipes(sortedRecipes);
+      setRecipes(sortedRecipes);
     } catch (err) {
       console.error("Failed to fetch recipes:", err);
       setError("Failed to load recipes. Please try again later.");
@@ -93,6 +91,10 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
   useEffect(() => {
     fetchRecipes();
   }, [fetchRecipes]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, searchTerm]);
 
   const filteredRecipes = recipes.filter((recipe) => {
     const matchesSearch = recipe.recipe_name
@@ -111,12 +113,59 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
     return false;
   });
 
+  const indexOfLastRecipe = currentPage * recipesPerPage;
+  const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
+  const currentRecipes = filteredRecipes.slice(
+    indexOfFirstRecipe,
+    indexOfLastRecipe
+  );
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(filteredRecipes.length / recipesPerPage);
+
+   const renderPaginationItems = () => {
+    const items = [];
+    const maxPagesToShow = 5;
+    const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    if (startPage > 1) {
+      items.push(<Pagination.Item key={1} onClick={() => paginate(1)}>1</Pagination.Item>);
+      if (startPage > 2) {
+        items.push(<Pagination.Ellipsis key="ellipsis-start" />);
+      }
+    }
+
+    for (let number = startPage; number <= endPage; number++) {
+      items.push(
+        <Pagination.Item
+          key={number}
+          active={number === currentPage}
+          onClick={() => paginate(number)}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        items.push(<Pagination.Ellipsis key="ellipsis-end" />);
+      }
+      items.push(<Pagination.Item key={totalPages} onClick={() => paginate(totalPages)}>{totalPages}</Pagination.Item>);
+    }
+
+    return items;
+  };
+
+
   const handleViewRecipeClick = useCallback((recipe: Recipe) => {
     setSelectedRecipeDetail(recipe);
     setShowRecipeDetailModal(true);
   }, []);
 
- const handleCloseRecipeDetailModal = useCallback(() => {
+  const handleCloseRecipeDetailModal = useCallback(() => {
     setShowRecipeDetailModal(false);
     setSelectedRecipeDetail(null);
   }, []);
@@ -178,51 +227,85 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
       ) : error ? (
         <div className="alert alert-danger text-center">{error}</div>
       ) : filteredRecipes.length > 0 ? (
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {filteredRecipes.map((recipe) => (
-            <div className="col" key={recipe.recipe_id}>
-              <Card className="h-100 recipe-card">
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <Card.Title className="mb-0">
-                      {recipe.recipe_name}
-                    </Card.Title>
-                    <span className={getPercentageBadgeClasses(recipe)}>
-                      {recipe.missing_all_ingredients
-                        ? "Missing All"
-                        : `${recipe.availability_percentage}% Available`}
-                    </span>
-                  </div>
-                  <h6 className="mt-3">Ingredients:</h6>
-                  <div className="ingredients-list">
-                    {recipe.ingredients.slice(0, 3).map((ingredient, idx) => (
-                      <span
-                        key={idx}
-                        className={`badge me-1 mb-1 ${
-                          ingredient.has
-                            ? "bg-success text-white"
-                            : "bg-secondary text-white"
-                        }`}
-                      >
-                        {ingredient.name}
+        <>
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {currentRecipes.map((recipe) => (
+              <div className="col" key={recipe.recipe_id}>
+                <Card className="h-100 recipe-card">
+                  <Card.Body>
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                      <Card.Title className="mb-0">
+                        {recipe.recipe_name}
+                      </Card.Title>
+                      <span className={getPercentageBadgeClasses(recipe)}>
+                        {recipe.missing_all_ingredients
+                          ? "Missing All"
+                          : `${recipe.availability_percentage}% Available`}
                       </span>
-                    ))}
-                    {recipe.ingredients.length > 3 && (
-                      <span className="badge bg-light text-dark view-more-ingredients"
-                        onClick={() => handleViewRecipeClick(recipe)} 
-                        style={{ cursor: 'pointer' }}>
-                        +{recipe.ingredients.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                  <Button variant="warning" className="w-100 mt-3" onClick={() => handleViewRecipeClick(recipe)}>
-                    View Recipe
-                  </Button>
-                </Card.Body>
-              </Card>
+                    </div>
+                    <h6 className="mt-3">Ingredients:</h6>
+                    <div className="ingredients-list">
+                      {recipe.ingredients.slice(0, 3).map((ingredient, idx) => (
+                        <span
+                          key={idx}
+                          className={`badge me-1 mb-1 ${
+                            ingredient.has
+                              ? "bg-success text-white"
+                              : "bg-secondary text-white"
+                          }`}
+                        >
+                          {ingredient.name}
+                        </span>
+                      ))}
+                      {recipe.ingredients.length > 3 && (
+                        <span
+                          className="badge bg-light text-dark view-more-ingredients"
+                          onClick={() => handleViewRecipeClick(recipe)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          +{recipe.ingredients.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      variant="warning"
+                      className="w-100 mt-3"
+                      onClick={() => handleViewRecipeClick(recipe)}
+                    >
+                      View Recipe
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="d-flex justify-content-center mt-4">
+              <Pagination>
+                <Pagination.First
+                  onClick={() => paginate(1)}
+                  disabled={currentPage === 1}
+                />
+                <Pagination.Prev
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                />
+
+                {renderPaginationItems()} 
+
+                <Pagination.Next
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                />
+                <Pagination.Last
+                  onClick={() => paginate(totalPages)}
+                  disabled={currentPage === totalPages}
+                />
+              </Pagination>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
         <Card className="text-center p-5 custom-card-shadow">
           <div className="mx-auto mb-4 rounded-circle bg-amber-100 d-flex align-items-center justify-content-center icon-circle">
@@ -249,15 +332,15 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
           </p>
         </Card>
       )}
-      {selectedRecipeDetail && ( 
+      {selectedRecipeDetail && (
         <ModalRecipeDetail
           show={showRecipeDetailModal}
           onClose={handleCloseRecipeDetailModal}
           recipeTitle={selectedRecipeDetail.recipe_name}
           ingredients={selectedRecipeDetail.ingredients}
           ingredientDetails={selectedRecipeDetail.ingredient_details}
-          recipeSteps={selectedRecipeDetail.recipe_steps} 
-          />
+          recipeSteps={selectedRecipeDetail.recipe_steps}
+        />
       )}
     </div>
   );
