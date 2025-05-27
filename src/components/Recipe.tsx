@@ -71,8 +71,17 @@ const RecipesPage: FC<RecipesPageProps> = ({ username }) => {
     try {
       const response = await ApiService.getRecipeBasedUser(username);
       const processed = processRecipes(response.recipes);
-      console.log("This is processed:", processed);
-      setRecipes(processed);
+
+      const sortedRecipes = [...processed].sort((a, b) => {
+
+        if (b.availability_percentage !== a.availability_percentage) {
+          return b.availability_percentage - a.availability_percentage;
+        }
+
+        return a.recipe_name.localeCompare(b.recipe_name);
+      });
+      console.log("This is processed:", sortedRecipes);
+      setRecipes(sortedRecipes);
     } catch (err) {
       console.error("Failed to fetch recipes:", err);
       setError("Failed to load recipes. Please try again later.");

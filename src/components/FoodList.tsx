@@ -38,8 +38,8 @@ export const FoodList: FC<FoodListProps> = ({
         log_id: item.log_id,
         food_name: item.food_name,
         quantity: item.quantity,
-        expiry_date: new Date(item.exp_date),
-        status: getExpiryStatus(item.exp_date).status,
+        expiry_date: new Date(item.expiry_date),
+        status: getExpiryStatus(item.expiry_date).status,
       };
     });
 

@@ -4,7 +4,7 @@ export interface FoodlistResDTO {
     log_id: string;
     food_name: string;
     quantity: number;
-    exp_date: string;
+    expiry_date: string;
     is_deleted: boolean;
 }
 
