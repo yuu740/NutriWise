@@ -17,12 +17,13 @@ import { toast } from "react-toastify";
 import Home from "./components/Home";
 import AppLayout from "./components/AppLayout";
 import Cookies from "js-cookie";
+import { CalculatorTable } from "./interface/Calcu";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<UserData | null>({});
   const [dataFoodList, setDataFoodList] = useState<FoodlistResDTO[]>();
-
+  const [dataFoodCalList, setDataFoodCalList] = useState<CalculatorTable[]>();
   useEffect(() => {
     const user = getUserData() as UserData;
     if (user) {
@@ -50,6 +51,20 @@ const App = () => {
     }
   };
 
+  const getFoodCalData = async () => {
+    if (!userData?.name) return;
+    try {
+      const data = await ApiService.getCalorieBasedUser(userData.name);
+      if (data && data.food_logs) {
+        setDataFoodCalList(data.food_logs);
+      } else {
+        setDataFoodCalList([]);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <Router>
       <Routes>
@@ -58,9 +73,30 @@ const App = () => {
 
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home isLoggedIn={userData != null} />} />
-          <Route path="calculator" element={<NutritionCalculator />} />
-          <Route path="food-list" element={<FoodList username = {userData?.name} foodItems={dataFoodList} onFoodAdded = {getFoodListData}/>} />
-          <Route path="recipes" element={<RecipesPage username = {userData?.name}/>} />
+          <Route
+            path="calculator"
+            element={
+              <NutritionCalculator
+                username={userData?.name}
+                foodCalItems={dataFoodCalList}
+                onFoodCalAdded={getFoodListData}
+              />
+            }
+          />
+          <Route
+            path="food-list"
+            element={
+              <FoodList
+                username={userData?.name}
+                foodItems={dataFoodList}
+                onFoodAdded={getFoodListData}
+              />
+            }
+          />
+          <Route
+            path="recipes"
+            element={<RecipesPage username={userData?.name} />}
+          />
         </Route>
       </Routes>
     </Router>
