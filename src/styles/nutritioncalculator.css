@@ -1,24 +1,52 @@
-/* Existing styles remain, add or modify these */
-body {
-  background-color: #fff9e6; /* Match the overall background */
-}
 
 .card {
-  border-radius: 0.5rem;
+  border-radius: 0.5rem; 
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  background-color: #ffffff; /* White cards */
-  border: none;
 }
 
-.card h5 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #343a40;
+
+.nutrition-icon {
+  font-size: 1.8rem;
+  margin-right: 0.5rem;
+  color: #ffc107; 
 }
+
+.table {
+  margin-bottom: 0; 
+}
+
+.table thead th {
+  background-color: #fffbeb;
+  border-bottom: 2px solid #dee2e6;
+  color: #495057; 
+}
+
+.table-white-custom {
+  background-color: #ffffff !important;
+}
+
+
+
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.05); 
+}
+
+
+.table-orange-custom {
+  background-color:#fffbeb !important;
+  color: #212529 !important; 
+  font-weight: 700 !important;
+}
+
+.fw-bold {
+  font-weight: 700 !important; 
+}
+
 
 .form-label {
-  font-weight: 600;
-  color: #343a40;
+  font-weight: 600; 
+  color: #34403d;
 }
 
 .form-control,
@@ -26,7 +54,6 @@ body {
   border-radius: 0.3rem;
   border: 1px solid #ced4da;
   padding: 0.375rem 0.75rem;
-  background-color: #fff;
 }
 
 .form-control:focus,
@@ -35,73 +62,32 @@ body {
   box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
 }
 
+
 .btn-warning {
-  background-color: #f4a261; /* Orange button color from image */
-  border-color: #f4a261;
-  color: #fff; /* White text for contrast */
-  font-weight: 500;
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529; 
 }
 
 .btn-warning:hover {
-  background-color: #e07a5f; /* Darker shade on hover */
-  border-color: #e07a5f;
+  background-color: #e0a800;
+  border-color: #d39e00;
 }
 
-.btn-link.text-danger {
+.btn-outline-danger {
   color: #dc3545;
-  text-decoration: none;
-  font-weight: 500;
+  border-color: #dc3545;
 }
 
-.btn-link.text-danger:hover {
-  color: #a71d31;
-  text-decoration: underline;
+.btn-outline-danger:hover {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
 }
 
-.table {
-  margin-bottom: 0;
-}
-
-.table thead th {
-  background-color: #fff9e6; /* Light yellow header */
-  border-bottom: 2px solid #dee2e6;
-  color: #495057;
-  font-weight: 600;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.02);
-}
-
-.table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.table-secondary {
-  background-color: #fff3cd !important; /* Light yellow for totals */
-  color: #343a40;
-  font-weight: 700;
-}
-
-.nutrition-icon {
-  font-size: 1.8rem;
-  margin-right: 0.5rem;
-  color: #f4a261; /* Match button color */
-}
-
-.nutritional-tips {
-  background-color: #fff9e6; /* Light yellow background */
-  padding: 1rem;
-  border-radius: 0.5rem;
-}
-
-.nutritional-tips strong {
-  color: #343a40;
-}
-
-.nutritional-tips p {
-  color: #6c757d;
-  margin-bottom: 0;
+.text-center img {
+  max-width: 50px;
+  height: auto;
 }
 
 @media (max-width: 767.98px) {
@@ -109,3 +95,15 @@ body {
     font-size: 1.5rem;
   }
 }
+
+.progress {
+  height: 1rem; 
+  border-radius: 0.25rem;
+  background-color: #e9ecef; 
+}
+
+.progress-bar {
+  background-color: #ffb700; 
+}
+
+
