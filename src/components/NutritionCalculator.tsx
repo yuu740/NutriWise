@@ -10,27 +10,51 @@ import {
 import moment from "moment";
 import { ApiService } from "../constant/ApiService";
 import { Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
+import ModalDel from "./ModalDel";
 
 interface NutritionCalculatorProps {
   username?: string;
   foodCalItems?: CalculatorTable[];
   onFoodCalAdded: () => void;
+  foodNames: string[];
 }
 
 const NutritionCalculator: FC<NutritionCalculatorProps> = ({
   username,
   foodCalItems = [],
   onFoodCalAdded,
+  foodNames,
 }) => {
   const [selectedFoodName, setSelectedFoodName] = useState<string>("");
   const [quantityInput, setQuantityInput] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+    const [showDelModal, setShowDelModal] = useState<boolean>(false);
+  const [itemToDeleteName, setItemToDeleteName] = useState<string | null>(null);
+  const [confirmDelAction, setConfirmDelAction] = useState<(() => void) | null>(null);
+  const [selectedItemsCount, setSelectedItemsCount] = useState<number>(0);
+
+ 
   const [totalCalories, setTotalCalories] = useState<number>(0);
   const [totalCarbs, setTotalCarbs] = useState<number>(0);
   const [totalProteins, setTotalProteins] = useState<number>(0);
   const [totalFats, setTotalFats] = useState<number>(0);
+
+  
+    useEffect(() => {
+    if (foodNames && foodNames.length > 0 && !selectedFoodName) {
+      setSelectedFoodName(foodNames[0]);
+      console.log("NutritionCalculator: Initial selected food name set to:", foodNames[0]);
+    }
+  }, [foodNames, selectedFoodName]);
+
+  useEffect(() => {
+    if (foodCalItems !== undefined) {
+      setLoading(false);
+    }
+  }, [foodCalItems]);
 
   useEffect(() => {
     let cal = 0;
@@ -50,6 +74,17 @@ const NutritionCalculator: FC<NutritionCalculatorProps> = ({
     setTotalProteins(parseFloat(prot.toFixed(0)));
     setTotalFats(parseFloat(fat.toFixed(0)));
   }, [foodCalItems]);
+  const showAlertToast = (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'error') => {
+    toast[type](message, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
 
   const handleAddFood = useCallback(async () => {
     const parsedQuantity = parseFloat(quantityInput);
@@ -72,10 +107,12 @@ const NutritionCalculator: FC<NutritionCalculatorProps> = ({
       food_name: selectedFoodName,
       quantity: parsedQuantity,
     };
+    setLoading(true); 
+    setError(null); 
 
     try {
       await ApiService.addCalorie(addingCalorie);
-      setSelectedFoodName("");
+      setSelectedFoodName(foodNames.length > 0 ? foodNames[0] : "");
       setQuantityInput("");
       onFoodCalAdded();
     } catch (err) {
@@ -86,60 +123,89 @@ const NutritionCalculator: FC<NutritionCalculatorProps> = ({
     }
   }, [username, selectedFoodName, quantityInput, onFoodCalAdded]);
 
-  const handleRemoveFood = useCallback(
-    async (logIdToRemove: string) => {
+   const handleRemoveFood = useCallback(
+    async (logIdToRemove: string, foodName: string) => {
       if (!username) {
-        alert("Username is required to delete food.");
+        showAlertToast("Username is required to delete food.", 'error');
         return;
       }
-      const confirmDelete = window.confirm(
-        "Are you sure you want to delete this food item?"
-      );
-      if (!confirmDelete) return;
 
-      const deleteCalorie: DelFoodCalReqDTO = {
-        username: username,
-        log_id: logIdToRemove,
-      };
+      // Show the Bootstrap confirmation modal
+      setItemToDeleteName(foodName);
+      setSelectedItemsCount(1); // For single item deletion
+      setConfirmDelAction(() => async () => {
+        const deleteCalorie: DelFoodCalReqDTO = {
+          username: username,
+          log_id: logIdToRemove,
+        };
 
-      setLoading(true);
+        setLoading(true);
+        setError(null);
 
-      try {
-        await ApiService.delCalorie(deleteCalorie);
-        onFoodCalAdded();
-      } catch (err) {
-        console.error("Error deleting food:", err);
-        setError("Failed to delete food. Please try again.");
-      } finally {
-        setLoading(false);
-      }
+        try {
+          await ApiService.delCalorie(deleteCalorie);
+          onFoodCalAdded();
+          showAlertToast("Food item deleted successfully!", 'success');
+        } catch (err: any) {
+          console.error("Error deleting food:", err);
+          setError("Failed to delete food. Please try again.");
+          showAlertToast("Failed to delete food. Please try again.", 'error');
+        } finally {
+          setLoading(false);
+        }
+      });
+      setShowDelModal(true);
     },
     [username, onFoodCalAdded]
   );
 
+
   const handleClearAll = useCallback(async () => {
     if (!username) {
-      alert("Username is required to clear all food items.");
+      showAlertToast("Username is required to clear all food items.", 'error');
       return;
     }
-    const confirmClear = window.confirm(
-      "Are you sure you want to clear all food items?"
-    );
-    if (!confirmClear) return;
-
-    setError(null);
-    try {
-      for (const item of foodCalItems) {
-        await ApiService.delCalorie({ username, log_id: item.log_id });
-      }
-      onFoodCalAdded();
-    } catch (err) {
-      console.error("Error clearing all food items:", err);
-      setError("Failed to clear all food items. Please try again.");
-    } finally {
-      setLoading(false);
+    if (foodCalItems.length === 0) {
+      showAlertToast("No food items to clear.", 'info');
+      return;
     }
+
+    // Show the Bootstrap confirmation modal for clearing all
+    setItemToDeleteName(null); // Indicate not deleting a single named item
+    setSelectedItemsCount(foodCalItems.length); // Pass the count of items to be cleared
+    setConfirmDelAction(() => async () => {
+      setError(null);
+      setLoading(true);
+      try {
+        for (const item of foodCalItems) {
+          await ApiService.delCalorie({ username, log_id: item.log_id });
+        }
+        onFoodCalAdded();
+        showAlertToast("All food items cleared successfully!", 'success');
+      } catch (err: any) {
+        console.error("Error clearing all food items:", err);
+        setError("Failed to clear all food items. Please try again.");
+        showAlertToast("Failed to clear all food items. Please try again.", 'error');
+      } finally {
+        setLoading(false);
+      }
+    });
+    setShowDelModal(true);
   }, [username, foodCalItems, onFoodCalAdded]);
+
+  const handleCloseDelModal = useCallback(() => {
+    setShowDelModal(false);
+    setItemToDeleteName(null);
+    setConfirmDelAction(null);
+    setSelectedItemsCount(0);
+  }, []);
+
+  const handleConfirmDelModal = useCallback(() => {
+    if (confirmDelAction) {
+      confirmDelAction();
+    }
+    handleCloseDelModal();
+  }, [confirmDelAction, handleCloseDelModal]);
 
   return (
     <div
@@ -164,9 +230,15 @@ const NutritionCalculator: FC<NutritionCalculatorProps> = ({
                 onChange={(e) => setSelectedFoodName(e.target.value)}
               >
                 <option value="">Select a food</option>
-                <option value="apple">Apple</option>
-                <option value="chicken">Chicken</option>
-                <option value="rice">Rice</option>
+                {foodNames.length > 0 ? (
+                  foodNames.map((name) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>No food types available</option>
+                )}
               </select>
             </div>
             <div className="mb-3">
@@ -183,8 +255,19 @@ const NutritionCalculator: FC<NutritionCalculatorProps> = ({
                 min="1"
               />
             </div>
-            <button className="btn btn-warning w-100" onClick={handleAddFood}>
-              Add to Calculation
+           <button
+              className="btn btn-warning w-100"
+              onClick={handleAddFood}
+              disabled={loading} 
+            >
+              {loading ? (
+                <span className="d-flex align-items-center justify-content-center">
+                  <Spinner animation="border" size="sm" role="status" className="me-2" />
+                  Adding...
+                </span>
+              ) : (
+                "Add to Calculation"
+              )}
             </button>
           </div>
 
@@ -216,7 +299,7 @@ const NutritionCalculator: FC<NutritionCalculatorProps> = ({
           <div className="card p-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h5>Food Items</h5>
-              {foodCalItems.length > 0 && ( // Use foodCalItems here
+              {foodCalItems.length > 0 && ( 
                 <button
                   className="btn btn-link text-danger p-0"
                   onClick={handleClearAll}
@@ -276,7 +359,8 @@ const NutritionCalculator: FC<NutritionCalculatorProps> = ({
                           <td>
                             <button
                               className="btn btn-outline-danger btn-sm"
-                              onClick={() => handleRemoveFood(item.log_id)}
+                              onClick={() => handleRemoveFood(item.log_id, item.food_name)}
+                              aria-label={`Remove ${item.food_name}`}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -336,6 +420,13 @@ const NutritionCalculator: FC<NutritionCalculatorProps> = ({
           </div>
         </div>
       </div>
+      <ModalDel
+        show={showDelModal}
+        onClose={handleCloseDelModal}
+        onConfirm={handleConfirmDelModal}
+        itemToDeleteName={itemToDeleteName}
+        selectedItemsCount={selectedItemsCount}
+      />
     </div>
   );
 };
