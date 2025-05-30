@@ -20,7 +20,7 @@ export const ModalDel: FC<ModalDelProps> = ({
   const isDeletingSingleItem = itemToDeleteName !== null;
   const message = isDeletingSingleItem
     ? `Are you sure you want to delete "${itemToDeleteName}"?`
-    : `Are you sure you want to delete ${selectedItemsCount} selected item(s)?`;
+    : `Are you sure you want to clear all ${selectedItemsCount} food items?`;
 
   return (
     <Modal show={show} onHide={onClose}>
@@ -33,7 +33,7 @@ export const ModalDel: FC<ModalDelProps> = ({
           Cancel
         </Button>
         <Button variant="danger" onClick={onConfirm}>
-          Delete
+          {isDeletingSingleItem ? 'Delete' : 'Clear All'} 
         </Button>
       </Modal.Footer>
     </Modal>
