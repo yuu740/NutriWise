@@ -152,4 +152,17 @@ export const ApiService = {
       console.error("Failed to delete food: ", error);
     }
   },
+  getFoodListName: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/getAllFoodNames`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        return response;
+      }
+    } catch (error) {
+      console.error("Failed to get all food name:", error);
+    }
+  },
 };

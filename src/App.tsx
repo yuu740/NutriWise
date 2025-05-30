@@ -18,12 +18,15 @@ import Home from "./components/Home";
 import AppLayout from "./components/AppLayout";
 import Cookies from "js-cookie";
 import { CalculatorTable } from "./interface/Calcu";
+import TermsOfService from "./components/TermsOfService";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<UserData | null>({});
   const [dataFoodList, setDataFoodList] = useState<FoodlistResDTO[]>();
   const [dataFoodCalList, setDataFoodCalList] = useState<CalculatorTable[]>();
+  const [foodListName, setfoodListName] = useState<string[]>([]);
   useEffect(() => {
     const user = getUserData() as UserData;
     if (user) {
@@ -38,11 +41,23 @@ const App = () => {
   useEffect(() => {
     if (userData?.name) {
       getFoodListData();
+      getFoodCalData();
+    } else {
+      setDataFoodList([]);
+      setDataFoodCalList([]);
+      console.log("App: User data name not available, clearing food data.");
     }
   }, [userData]);
 
+   useEffect(() => {
+    getAllFoodNames();
+  }, []);
+
   const getFoodListData = async () => {
-    if (!userData?.name) return;
+    if (!userData?.name) {
+      console.warn("getFoodListData: Username is not available.");
+      return; 
+    }
     try {
       const res = await ApiService.getFoodlistBasedUser(userData?.name);
       setDataFoodList(res);
@@ -52,11 +67,14 @@ const App = () => {
   };
 
   const getFoodCalData = async () => {
-    if (!userData?.name) return;
+    if (!userData?.name) {
+      console.warn("getFoodNameData: Username is not available.");
+      return; 
+    }
     try {
-      const data = await ApiService.getCalorieBasedUser(userData.name);
-      if (data && data.food_logs) {
-        setDataFoodCalList(data.food_logs);
+      const data: CalculatorTable[] = await ApiService.getCalorieBasedUser(userData.name);
+      if (Array.isArray(data)) {
+        setDataFoodCalList(data);
       } else {
         setDataFoodCalList([]);
       }
@@ -65,11 +83,27 @@ const App = () => {
     }
   };
 
+  const getAllFoodNames = async () => {
+    try {
+      const response = await ApiService.getFoodListName(); 
+      if (response && response.ok) {
+        const foodNames = await response.json(); 
+        setfoodListName(foodNames);
+      } else {
+        toast.error("Failed to fetch food names.");
+      }
+    } catch (error: any) {
+      toast.error("Error fetching food names: " + error.message);
+    }
+  };
+
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/terms" element={<TermsOfService />} /> 
+        <Route path="/privacy" element={<PrivacyPolicy />} />
 
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home isLoggedIn={userData != null} />} />
@@ -79,7 +113,8 @@ const App = () => {
               <NutritionCalculator
                 username={userData?.name}
                 foodCalItems={dataFoodCalList}
-                onFoodCalAdded={getFoodListData}
+                onFoodCalAdded={getFoodCalData}
+                foodNames={foodListName}
               />
             }
           />
