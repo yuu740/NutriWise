@@ -18,6 +18,8 @@ import Home from "./components/Home";
 import AppLayout from "./components/AppLayout";
 import Cookies from "js-cookie";
 import { CalculatorTable } from "./interface/Calcu";
+import TermsOfService from "./components/TermsOfService";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -100,6 +102,8 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/terms" element={<TermsOfService />} /> 
+        <Route path="/privacy" element={<PrivacyPolicy />} />
 
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home isLoggedIn={userData != null} />} />
