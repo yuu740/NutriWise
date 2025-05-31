@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/home.css";
 
@@ -13,10 +13,16 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
       navigate(link); 
     }
   };
+
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div className="container py-5 text-center">
-      <h1 className="display-4 mb-3">Welcome to NutriWise</h1>
-      <p className="lead mb-5">
+      <h1 className="display-4 mb-3 fw-bold">Welcome to NutriWise</h1>
+      <p className="lead mb-5"
+      style={{
+        fontWeight: '400'
+      }}>
         Your personal nutrition assistant to track food, calculate nutrients,
         and discover recipes based on what you have.
       </p>
@@ -110,10 +116,15 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 <p className="card-text">{card.text}</p>
                  <div
                   onClick={(e) => handleCardClick(e, card.link)}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
                   className={`btn direct-button text-white ${
                     !isLoggedIn ? "disabled" : ""
                   }`}
-                  style={{ cursor: !isLoggedIn ? "not-allowed" : "pointer" }} // Tambahkan kursor
+                  style={{ 
+                      cursor: !isLoggedIn ? "not-allowed" : "pointer",
+                       backgroundColor: isHovered ? '#b5560e' : '#f59e0b'
+                    }} // Tambahkan kursor
                 >
                   {card.title === "Track Food"
                     ? "View Food List"
