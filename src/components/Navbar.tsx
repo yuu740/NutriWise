@@ -54,7 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
         <header className="border-bottom bg-white shadow-sm">
           <div className="container d-flex h-16 align-items-center justify-content-between px-4">
             <h1 className="h4 font-weight-bold text-amber-600">
-              <Link className="text-decoration-none orange-color-light" to="/">
+              <Link className="text-decoration-none orange-color-light fs-3" to="/">
                 NutriWise
               </Link>
             </h1>
@@ -68,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                 <Link
                   key={path}
                   to={isLoggedIn ? path : "/login"}
-                  className={`nav-link-custom ${
+                  className={`fs-5 nav-link-custom ${
                     isActive(path) ? "active" : ""
                   } ${!isLoggedIn ? "disabled-link" : ""}`}
                   onClick={(e) => {
@@ -110,10 +110,10 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                 </div>
               ) : (
                 <>
-                  <Link to="/login" className="nav-login">
+                  <Link to="/login" className="nav-login fs-5">
                     Login
                   </Link>
-                  <Link to="/register" className="nav-register">
+                  <Link to="/register" className="nav-register fs-5">
                     Register
                   </Link>
                 </>
