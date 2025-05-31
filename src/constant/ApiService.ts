@@ -45,6 +45,21 @@ export const ApiService = {
     }
     return data;
   },
+  forgotPass: async(email: string) => {
+    const response = await fetch(`${API_BASE_URL}/requestResetCode`, {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({email}),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Something went wrong.");
+    }
+    return response.json(); 
+  },
 
   getFoodlistBasedUser: async (username: string | undefined) => {
     const response = await fetch(`${API_BASE_URL}/getFoodlistBasedUser`, {
