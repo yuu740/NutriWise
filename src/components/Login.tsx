@@ -34,6 +34,7 @@ export const Login = () => {
         Cookies.set("token", result.token);
         toast.success(result.message);
         navigate("/");
+        window.location.reload();
       } else {
         toast.error(result.message);
       }
