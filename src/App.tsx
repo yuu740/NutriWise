@@ -20,6 +20,7 @@ import Cookies from "js-cookie";
 import { CalculatorTable } from "./interface/Calcu";
 import TermsOfService from "./components/TermsOfService";
 import PrivacyPolicy from "./components/PrivacyPolicy";
+import { ForgotPassword } from "./components/ForgotPassword";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -101,6 +102,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/auth/forgot-password" element={<ForgotPassword />} /> 
         <Route path="/register" element={<Register />} />
         <Route path="/terms" element={<TermsOfService />} /> 
         <Route path="/privacy" element={<PrivacyPolicy />} />
