@@ -98,14 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                         Welcome, {userData?.name}
                       </p>
                     </div>
-                    <hr className="my-1" />
-                    <Link to="/profile" className="dropdown-item-custom">
-                      Profile
-                    </Link>
-                    <Link to="/settings" className="dropdown-item-custom">
-                      Settings
-                    </Link>
-                    <hr className="my-1" />
+                    
                     <div
                       onClick={handleLogout}
                       className="dropdown-item-custom"
