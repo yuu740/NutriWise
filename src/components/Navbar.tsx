@@ -43,7 +43,8 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
     Cookies.remove("token");
     setUserData(null);
     setIsLoggedIn(false); 
-    navigate("/login");
+    navigate("/");
+    window.location.reload();
   };
 
   const isActive = (path: string) => location.pathname === path;
