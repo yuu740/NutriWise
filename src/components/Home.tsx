@@ -5,7 +5,7 @@ import "../styles/home.css";
 const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const navigate = useNavigate();
 
-   const handleCardClick = (e: React.MouseEvent, link: string) => {
+  const handleCardClick = (e: React.MouseEvent, link: string) => {
     if (!isLoggedIn) {
       e.preventDefault(); 
       navigate("/login");
@@ -13,8 +13,6 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
       navigate(link); 
     }
   };
-
-  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div className="container py-5 text-center">
@@ -41,10 +39,10 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
             get personalized recipe recommendations.
           </p>
           <div className="d-flex justify-content-center gap-3">
-            <Link to="/login" className="btn bg-white text-dark border">
+            <Link to="/login" className="btn bg-white text-dark border white-button">
               Log in
             </Link>
-            <Link to="/register" className="btn direct-button text-white">
+            <Link to="/register" className="btn redirect-button text-white">
               Create Account
             </Link>
           </div>
@@ -114,16 +112,13 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 </div>
                 <h5 className="card-title">{card.title}</h5>
                 <p className="card-text">{card.text}</p>
-                 <div
+                <div
                   onClick={(e) => handleCardClick(e, card.link)}
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                  className={`btn direct-button text-white ${
+                  className={`redirect-button btn direct-button text-white ${
                     !isLoggedIn ? "disabled" : ""
                   }`}
                   style={{ 
                       cursor: !isLoggedIn ? "not-allowed" : "pointer",
-                       backgroundColor: isHovered ? '#b5560e' : '#f59e0b'
                     }} // Tambahkan kursor
                 >
                   {card.title === "Track Food"
