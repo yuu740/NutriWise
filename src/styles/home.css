@@ -7,6 +7,24 @@
   text-decoration: none;
 }
 
+.white-button:hover {
+  background-color: rgb(206, 206, 206) !important;
+}
+
+.redirect-button {
+  background-color: #f59e0b !important;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.redirect-button:hover {
+  background-color: #b5560e !important;
+}
+
 .card-custom {
   border: none;
   border-radius: 10px;

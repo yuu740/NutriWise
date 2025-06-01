@@ -41,10 +41,10 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
             get personalized recipe recommendations.
           </p>
           <div className="d-flex justify-content-center gap-3">
-            <Link to="/login" className="btn bg-white text-dark border">
+            <Link to="/login" className="btn bg-white text-dark border white-button">
               Log in
             </Link>
-            <Link to="/register" className="btn direct-button text-white">
+            <Link to="/register" className="btn redirect-button text-white">
               Create Account
             </Link>
           </div>
