@@ -7,29 +7,27 @@ const PrivacyPolicy: FC = () => {
     <div className="container mt-5 mb-5" style={{ backgroundColor: "#fff9e6", minHeight: "100vh", padding: "2rem" }}>
       <h2 className="mb-4 text-center">Privacy Policy</h2>
       <p className="lead">
-        Your privacy is important to us. This Privacy Policy explains how NutriWise collects, uses, and discloses your
-        personal information.
+        Your privacy matters to us. This Privacy Policy explains what information we collect, uses and how we use it.
       </p>
 
       <h4 className="mt-4">1. Information We Collect</h4>
       <p>
-        We collect information to provide better services to all our users. The types of information we collect include:
+        We collect information to make NutriWise work better. The types of information we collect include:
       </p>
       <ul>
-        <li><strong>Personal Information:</strong> Such as your name, email address, and password, provided during registration.</li>
-        <li><strong>Usage Data:</strong> Information on how the service is accessed and used (e.g., food items logged, recipes viewed, calculator usage).</li>
-        <li><strong>Device Data:</strong> Information about your device, such as IP address, browser type, and operating system.</li>
+        <li><strong>Personal Information:</strong>  name, email address, and password provided during registration.</li>
+        <li><strong>Usage Data:</strong> such as food you log, recipes you view, and tools you use.</li>
+        <li><strong>Device Data:</strong> such as your IP address, browser type, and operating system.</li>
       </ul>
 
-      <h4 className="mt-4">2. How We Use Information</h4>
+      <h4 className="mt-4">2. How We Use your infrmation</h4>
       <p>
-        We use the collected information for various purposes:
+        We use the collected information to:
       </p>
       <ul>
-        <li>To provide and maintain our service.</li>
-        <li>To notify you about changes to our service.</li>
-        <li>To allow you to participate in interactive features of our service when you choose to do so.</li>
-        <li>To provide customer support.</li>
+        <li>Maintain our service</li>
+        <li>Let you know about updates and changes</li>
+        <li>Provide customer support.</li>
         <li>To gather analysis or valuable information so that we can improve our service.</li>
         <li>To monitor the usage of our service.</li>
         <li>To detect, prevent and address technical issues.</li>
