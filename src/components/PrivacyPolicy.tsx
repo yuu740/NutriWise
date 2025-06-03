@@ -80,15 +80,15 @@ const PrivacyPolicy: FC = () => {
         be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit.
       </p>
 
-      <h4 className="mt-4">8. Changes to This Privacy Policy</h4>
+      <h4 className="mt-4">8. Changes to Privacy Policy</h4>
       <p>
         We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy
         on this page.
       </p>
 
-      <h4 className="mt-4">9. Contact Us</h4>
+      <h4 className="mt-4">9. Need help?</h4>
       <p>
-        If you have any questions about this Privacy Policy, please contact us by email: privacy@nutriwise.com.
+        Contact us at privacy@nutriwise.com
       </p>
 
       <div className="text-center mt-5">
