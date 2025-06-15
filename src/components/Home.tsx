@@ -7,27 +7,29 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
 
   const handleCardClick = (e: React.MouseEvent, link: string) => {
     if (!isLoggedIn) {
-      e.preventDefault(); 
+      e.preventDefault();
       navigate("/login");
     } else {
-      navigate(link); 
+      navigate(link);
     }
   };
 
   return (
     <div className="container py-5 text-center">
       <h1 className="display-4 mb-3 fw-bold">Welcome to NutriWise</h1>
-      <p className="lead mb-5"
-      style={{
-        fontWeight: '400'
-      }}>
+      <p
+        className="lead mb-5"
+        style={{
+          fontWeight: "400",
+        }}
+      >
         Your personal nutrition assistant to track food, calculate nutrients,
         and discover recipes based on what you have.
       </p>
 
       {!isLoggedIn && (
         <div
-          className="p-4 border rounded mx-auto border-warning mb-5" 
+          className="p-4 border rounded mx-auto border-warning mb-5"
           style={{
             maxWidth: "600px",
             backgroundColor: "#fffbeb",
@@ -35,11 +37,14 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         >
           <h4>Create an account to get started</h4>
           <p className="text-muted">
-            Sign up to save your food inventory, track your nutritional goals, and
-            get personalized recipe recommendations.
+            Sign up to save your food inventory, track your nutritional goals,
+            and get personalized recipe recommendations.
           </p>
           <div className="d-flex justify-content-center gap-3">
-            <Link to="/login" className="btn bg-white text-dark border white-button">
+            <Link
+              to="/login"
+              className="btn bg-white text-dark border white-button"
+            >
               Log in
             </Link>
             <Link to="/register" className="btn redirect-button text-white">
@@ -48,7 +53,6 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
           </div>
         </div>
       )}
-
 
       <div className="row mb-5 p-5">
         {[
@@ -114,12 +118,8 @@ const Home = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 <p className="card-text">{card.text}</p>
                 <div
                   onClick={(e) => handleCardClick(e, card.link)}
-                  className={`redirect-button btn direct-button text-white ${
-                    !isLoggedIn ? "disabled" : ""
-                  }`}
-                  style={{ 
-                      cursor: !isLoggedIn ? "not-allowed" : "pointer",
-                    }} // Tambahkan kursor
+                  className="redirect-button btn direct-button text-white"
+                  style={{ cursor: "pointer" }}
                 >
                   {card.title === "Track Food"
                     ? "View Food List"
